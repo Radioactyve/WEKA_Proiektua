@@ -11,6 +11,7 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.util.Random;
 
+
 public class ParametroEkorketa {
 
     public static void main(String[] args) throws Exception {
@@ -25,7 +26,7 @@ public class ParametroEkorketa {
             data.setClassIndex(data.numAttributes()-1);
 
             //CSV fitxategia sortu eta hasierako infromazioa sartu
-            BufferedWriter writer =new BufferedWriter(new FileWriter("EkorketaDatuak.csv"));
+            BufferedWriter writer =new BufferedWriter(new FileWriter("EkorketaDatuakRF.csv"));
             String[] header={"P/Nratio", "BagSizePercentage", "MaxDepth", "NumTree", "F-measure", "Denbora"};
             for (int i = 0; i < header.length; i++) {
                 writer.write(header[i]);
@@ -33,8 +34,6 @@ public class ParametroEkorketa {
                     writer.write(",");
                 }
             }
-            writer.newLine();
-            writer.write("P/Nratio BagSizePercentage MaxDepth NumTree F-measure Denbora");
 
             //Klase minoritarioa kalkulatu
             AttributeStats attrStats = data.attributeStats(data.numAttributes() - 1);
