@@ -1,49 +1,13 @@
 package Data;
 
-import weka.core.Instances;
-import weka.core.converters.ArffSaver;
-import weka.core.converters.CSVLoader;
-
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.*;
 
 public class GetRawData {
-
-    public static void emojiParse(String csvPath, String csvPartial, String csvModify){
-        /**
-         * Metodo honek hiru String motako parametro hartzen ditu, csv-aren izena, lehen aldaketa gordtzeko csv-aren izena
-         * eta azken aldaketa gordetzeko izena
-         * Parametro hauekin deituko du emoji.py scripta eta honek terminalean idazten duena printeatuko du
-         * Emoji.py egiten duena da web batean aurkitu ditugun emoji garrantzitzuenak lortu eta lista bat sortu, behin lista izanda,
-         * csv guztia begiratu eta agertzen diren emoji garrantzitsuak eraldatu hitz bakarra izateko (lotu hitzak _ erabiliz)
-         * */
-
-        try {
-            // Python scrpita exkutatzeko komandoa
-            String comando = "python src/python/emoji.py " + csvPath  + " " + csvPartial + " " + csvModify;
-
-            // Komanda exekutatu
-            Process p = Runtime.getRuntime().exec(comando);
-
-            // Irteera egongo balitz irakurri
-            BufferedReader in = new BufferedReader(new InputStreamReader(p.getInputStream()));
-            String linea;
-            while ((linea = in.readLine()) != null) {
-                System.out.println(linea);
-            }
-
-            //Itxaron scripta amaitu arte itxaron eta idatzi kodigoa 0-Ondo amaitu du (errorerik gabe)
-            int exitCode = p.waitFor();
-            System.out.println("El script de Python finalizó con el código de salida: " + exitCode);
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
 
     private static void csvFinal(String modifiedFilePath, String outputPath) {
         /**
@@ -96,11 +60,21 @@ public class GetRawData {
          * csv-an dauden datuak arff moduan idazten ditu
          * */
 
-        String partial = "partial_" + csvPath.substring(csvPath.lastIndexOf("/") + 1);
-        String modified = "modified_" + csvPath.substring(csvPath.lastIndexOf("/") + 1);
-        emojiParse(csvPath, partial, modified);
+        String outputPath = "src/x_out/modified_" + csvPath;
 
-        csvFinal("src/x_out/" + modified, "src/x_out/final_train.csv");
+        List<String> emojis = null;
+
+        try {
+            // Read all lines from the file into a List
+            emojis = Files.readAllLines(Paths.get("src/x_in/emoji.txt"));
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        modifyCsvWithPhrases(csvPath, emojis, outputPath);
+
+        csvFinal(outputPath, "src/x_out/final_" +csvPath);
 
         try (
                 BufferedReader br = new BufferedReader(new FileReader("src/x_out/final_train.csv"));
@@ -138,11 +112,14 @@ public class GetRawData {
         }
 
         //Ezabatu pausuak emateko egin diren artxibo lagungarriak partial, modified
-        File partialFile = new File("src/x_out/" + partial);
-        File modifiedFile = new File("src/x_out/" + modified);
-        if (partialFile.delete() & modifiedFile.delete()){
-            System.out.println("Artxibo lagungarriak ezabatu dira");
-        }
+        File modified = new File("src/x_out/modified_" + csvPath);
+        modified.delete();
+
+        //Finala ezabatu?
+        //File finala = new File("src/x_out/final_" + csvPath);
+        //finala.delete();
+
+
     }
 
     private static List<String> parseLine(String line) {
@@ -170,5 +147,33 @@ public class GetRawData {
         values.add(value.toString());
 
         return values;
+    }
+
+    public static void modifyCsvWithPhrases(String csvPath, List<String> emojiSet, String outputPath) {
+        /**
+         * Metodo honek bi String motako parametro hartzen ditu, lehenengoa csv-aren path-a eta bigarrena arff baten path-a
+         * Metodoak adierazitako csv-an dauden datuak hartzen ditu eta hauekin arff bat sortzen du (jada existitzen ez bada) eta
+         * csv-an dauden datuak arff moduan idazten ditu
+         * */
+        try (BufferedReader br = new BufferedReader(new FileReader("src/x_in/" +csvPath));
+             BufferedWriter bw = new BufferedWriter(new FileWriter(outputPath))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                String modifiedLine = line;
+                for (String emoji : emojiSet) {
+                    // Crear un patrón de expresión regular para cada emoji
+                    String regexPattern = "\\b" + Pattern.quote(emoji) + "\\b";
+                    Pattern pattern = Pattern.compile(regexPattern);
+                    Matcher matcher = pattern.matcher(modifiedLine);
+                    // Reemplazar todos los emojis encontrados en la línea
+                    modifiedLine = matcher.replaceAll(emoji.replace(" ", "_"));
+                }
+                // Escribir la línea modificada al archivo de salida
+                bw.write(modifiedLine);
+                bw.newLine();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
