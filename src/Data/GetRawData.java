@@ -77,7 +77,7 @@ public class GetRawData {
         csvFinal(outputPath, "src/x_out/final_" +csvPath);
 
         try (
-                BufferedReader br = new BufferedReader(new FileReader("src/x_out/final_train.csv"));
+                BufferedReader br = new BufferedReader(new FileReader("src/x_out/final_" + csvPath));
                 PrintWriter pw = new PrintWriter(new FileWriter(arffPath))
         ) {
             // ARFF-aren goiburua idatzi
