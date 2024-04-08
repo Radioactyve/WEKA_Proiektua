@@ -1,39 +1,59 @@
 package Sailkatzailea;
 
 
+
+
 import weka.classifiers.Evaluation;
 import weka.classifiers.trees.RandomForest;
 import weka.core.AttributeStats;
 import weka.core.Instances;
 import weka.core.converters.ConverterUtils.DataSource;
 
+
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.util.Random;
 
 
+
+
 public class ParametroEkorketa {
 
+
     public static void main(String[] args) throws Exception {
-        if (args.length != 1) {
-            System.out.println("Atributuak sartzean akats bat izan duzu!");
-            System.out.println("Erabilera:");
-            System.out.println("java -jar ParametroEkorketa.jar train.arff ");
+        if (args.length != 2) {
+            System.out.println("Parametroak sartzean akats bat izan duzu!");
+            System.out.println("Parametroen forma:");
+            System.out.println(" train.arff dev.arff");
         } else {
             //Datuak kargatu
             DataSource dataSource = new DataSource(args[0]);
             Instances data = dataSource.getDataSet();
             data.setClassIndex(data.numAttributes()-1);
 
+
+            DataSource dataSource1 = new DataSource(args[1]);
+            Instances dataDev = dataSource1.getDataSet();
+            dataDev.setClassIndex(dataDev.numAttributes()-1);
+
+
             //CSV fitxategia sortu eta hasierako infromazioa sartu
             BufferedWriter writer =new BufferedWriter(new FileWriter("EkorketaDatuakRF.csv"));
-            String[] header={"P/Nratio", "BagSizePercentage", "MaxDepth", "NumTree", "F-measure", "Denbora"};
+            String[] header={"PNratio", "BagSizePercentage", "MaxDepth", "NumTree", "F-measure", "Denbora"};
             for (int i = 0; i < header.length; i++) {
                 writer.write(header[i]);
                 if (i < header.length - 1) {
                     writer.write(",");
                 }
             }
+            BufferedWriter writer1 =new BufferedWriter(new FileWriter("DF_parametroOpt.csv"));
+            for (int i = 0; i < header.length; i++) {
+                writer.write(header[i]);
+                if (i < header.length - 1) {
+                    writer.write(",");
+                }
+            }
+
 
             //Klase minoritarioa kalkulatu
             AttributeStats attrStats = data.attributeStats(data.numAttributes() - 1);
@@ -47,14 +67,16 @@ public class ParametroEkorketa {
                 }
             }
 
+
             //Parametroak sortu eta hasieratu 0 ra
             double optFMeasure = 0.0;
-            int PNopt = 0;
-            int BSPopt = 0;
-            int NTopt = 0;
-            int MDopt = 0;
+            double PNopt = 0;
+            double BSPopt = 0;
+            double NTopt = 0;
+            double MDopt = 0;
             long denbOpt= 0;
             String[] datuak={};
+
 
             //Random forest-a sortu eta atributuen erro karratua
             RandomForest RF= new RandomForest();
@@ -73,7 +95,7 @@ public class ParametroEkorketa {
                             RF.setNumIterations(NT);
                             long Hasiera = System.nanoTime();
                             Evaluation evaluator = new Evaluation(data);
-                            evaluator.crossValidateModel(RF, data, 10, new Random(1));
+                            evaluator.crossValidateModel(RF, dataDev, 10, new Random(1));
                             long Amaiera = System.nanoTime();
                             long exDenb=Amaiera-Hasiera;
                             double Fmeasure = evaluator.fMeasure(minoritarioa);
@@ -98,11 +120,20 @@ public class ParametroEkorketa {
                                 BSPopt = BSP;
                                 NTopt = NT;
 
+
                                 denbOpt=exDenb;
+
 
                             }
                         }
                     }
+                }
+            }
+            datuak= new String[]{String.valueOf(PNopt), String.valueOf(BSPopt), String.valueOf(MDopt), String.valueOf(NTopt), String.valueOf(optFMeasure), String.valueOf(denbOpt)};
+            for (int i = 0; i < datuak.length; i++) {
+                writer1.write(datuak[i]);
+                if (i < datuak.length - 1) {
+                    writer.write(",");
                 }
             }
             System.out.println("Parametro optimoak hauek dira:");
