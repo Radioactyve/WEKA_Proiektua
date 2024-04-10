@@ -17,7 +17,7 @@ public class ParametroEkorketa {
         if (args.length != 2) {
             System.out.println("Parametroak sartzean akats bat izan duzu!");
             System.out.println("Parametroen forma:");
-            System.out.println(" train.arff dev.arff");
+            System.out.println(" java -jar ParametroEkorketa.jar train.arff dev.arff");
         } else {
             //Datuak kargatu
             DataSource dataSource = new DataSource(args[0]);

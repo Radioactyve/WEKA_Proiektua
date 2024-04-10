@@ -1,10 +1,6 @@
-/*
-
 package Sailkatzailea;
 
 
-import ml.dmlc.xgboost4j.java.Booster;
-import ml.dmlc.xgboost4j.java.DMatrix;
 import ml.dmlc.xgboost4j.java.XGBoost;
 import ml.dmlc.xgboost4j.java.XGBoostError;
 import weka.classifiers.Evaluation;
@@ -12,26 +8,35 @@ import weka.core.AttributeStats;
 import weka.core.Instances;
 import weka.core.converters.ConverterUtils;
 
+
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+import ml.dmlc.xgboost4j.java.Booster;
+import ml.dmlc.xgboost4j.java.DMatrix;
+
 
 
 public class ParametroEkorketaXGB {
     public static void main(String[] args) throws Exception {
-        if (args.length != 1) {
+        if (args.length != 2) {
             System.out.println("Atributuak sartzean akats bat izan duzu!");
             System.out.println("Erabilera:");
-            System.out.println("java -jar ParametroEkorketa.jar train.arff ");
+            System.out.println("java -jar ParametroEkorketa.jar train.arff dev.arff ");
         } else {
             //Datuak kargatu
             ConverterUtils.DataSource dataSource = new ConverterUtils.DataSource(args[0]);
             Instances data = dataSource.getDataSet();
             data.setClassIndex(data.numAttributes() - 1);
 
+            ConverterUtils.DataSource devSource = new ConverterUtils.DataSource(args[1]);
+            Instances dev = devSource.getDataSet();
+            dev.setClassIndex(data.numAttributes() - 1);
+
             DMatrix dataXGB = convertToDMatrix(data);
+            DMatrix devXGB = convertToDMatrix(dev);
 
             //CSV fitxategia sortu eta hasierako infromazioa sartu
             BufferedWriter writer = new BufferedWriter(new FileWriter("EkorketaDatuakXGB.csv"));
@@ -100,6 +105,7 @@ public class ParametroEkorketaXGB {
 
                                         Booster booster = XGBoost.train(dataXGB, parametroak, NI, null, null, null);
 
+
                                         //Seguir desde aqui
 
                                         long Hasiera = System.nanoTime();
@@ -152,20 +158,21 @@ public class ParametroEkorketaXGB {
         }
     }
     private static DMatrix convertToDMatrix(Instances data) throws XGBoostError {
-        float[][] features = new float[data.numInstances()][data.numAttributes() - 1];
-        float[] labels = new float[data.numInstances()];
+        int numInstances = data.numInstances();
+        int numAttributes = data.numAttributes() - 1;
+        float[] dataFloats = new float[numInstances * numAttributes];
+        float[] labels = new float[numInstances];
 
-        for (int i = 0; i < data.numInstances(); i++) {
-            for (int j = 0; j < data.numAttributes() - 1; j++) {
-                features[i][j] = (float) data.instance(i).value(j);
+        for (int i = 0; i < numInstances; i++) {
+            for (int j = 0; j < numAttributes; j++) {
+                dataFloats[i * numAttributes + j] = (float)data.instance(i).value(j);
             }
-            labels[i] = (float) data.instance(i).classValue();
+            labels[i] = (float)data.instance(i).classValue();
         }
 
-        DMatrix dMatrix = new DMatrix(features, labels);
+        DMatrix dMatrix = new DMatrix(dataFloats, numInstances, numAttributes);
+        dMatrix.setLabel(labels);
         return dMatrix;
     }
 }
-
- */
 
