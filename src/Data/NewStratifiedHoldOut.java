@@ -9,10 +9,17 @@ import java.io.*;
 
 public class NewStratifiedHoldOut {
 
-    public static void main() {
+    private static String trainArff = "src/x_out/Data/train/train.arff";
+    private static String newTrainArff = "src/x_out/Data/train/new_train.arff";
+    private static String devArff = "src/x_out/Data/dev/dev.arff";
+    private static String newDevArff = "src/x_out/Data/dev/new_dev.arff";
+    private static String combinedArff = "src/x_out/Data/combined.arff";
+
+
+    public static void NewStratifiedHoldOut(int sampleSize) {
         try {
             juntatu();
-            banatu();
+            banatu(sampleSize);
         }
         catch (Exception e){
             System.out.println("Errore bat egon da datuak juntatu eta banatzerakoan");
@@ -22,17 +29,11 @@ public class NewStratifiedHoldOut {
     }
 
     private static void juntatu() {
-        // Nombres de archivos ARFF a juntar
-        String firstFile = "src/x_out/train.arff";
-        String secondFile = "src/x_out/dev.arff";
-        // Archivo de salida
-        String outputFile = "src/x_out/combined.arff";
-
         try {
             // Abrir el primer archivo
-            BufferedReader reader1 = new BufferedReader(new FileReader(firstFile));
+            BufferedReader reader1 = new BufferedReader(new FileReader(trainArff));
             // Crear el archivo de salida
-            BufferedWriter writer = new BufferedWriter(new FileWriter(outputFile));
+            BufferedWriter writer = new BufferedWriter(new FileWriter(combinedArff));
 
             String line;
             boolean isDataSection = false;
@@ -44,7 +45,7 @@ public class NewStratifiedHoldOut {
             reader1.close();
 
             // Abrir el segundo archivo
-            BufferedReader reader2 = new BufferedReader(new FileReader(secondFile));
+            BufferedReader reader2 = new BufferedReader(new FileReader(devArff));
             boolean copy = false;
             // Copiar solo la sección de datos del segundo archivo
             while ((line = reader2.readLine()) != null) {
@@ -70,14 +71,14 @@ public class NewStratifiedHoldOut {
 
 
 
-    private static void banatu() throws Exception {
+    private static void banatu(double sampleSize) throws Exception {
         // Datuak kargatu
-        DataSource source = new DataSource("src/x_out/combined.arff");
+        DataSource source = new DataSource(combinedArff);
         Instances data = source.getDataSet();
 
         // Klase atributua ezarri, normalean azkena izaten da
-        if (data.classIndex() == -1){
-            data.setClassIndex(1);
+        if (data.classIndex() == -1) {
+            data.setClassIndex(data.attribute("claseValue").index());
         }
 
         // -------------[STRATIFIED BANAKETA]-----------
@@ -85,25 +86,24 @@ public class NewStratifiedHoldOut {
         Resample resampleFilter = new Resample();
         resampleFilter.setInputFormat(data);
         resampleFilter.setNoReplacement(true);
-        resampleFilter.setSampleSizePercent(70.0);
+        resampleFilter.setSampleSizePercent(sampleSize);
         resampleFilter.setInvertSelection(false);
 
         // Train
         Instances trainData = Filter.useFilter(data, resampleFilter);
 
-
         // Dev
         resampleFilter.setInputFormat(data);
-        resampleFilter.setSampleSizePercent(70.0);
+        resampleFilter.setSampleSizePercent(sampleSize);
         resampleFilter.setInvertSelection(true);
         Instances devData = Filter.useFilter(data, resampleFilter);
 
         //Gorde artxiboak (falta)
-        FileWriter fwTrain = new FileWriter("src/x_out/new_train.arff");
+        FileWriter fwTrain = new FileWriter(newTrainArff);
         fwTrain.write(trainData.toString());
         fwTrain.close();
 
-        FileWriter fwDev = new FileWriter("src/x_out/new_dev.arff");
+        FileWriter fwDev = new FileWriter(newDevArff);
         fwDev.write(devData.toString());
         fwDev.close();
 

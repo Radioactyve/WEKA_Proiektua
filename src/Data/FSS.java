@@ -1,20 +1,23 @@
 package Data;
 
-import weka.attributeSelection.GainRatioAttributeEval;
+import weka.attributeSelection.InfoGainAttributeEval;
 import weka.attributeSelection.Ranker;
 import weka.core.Instances;
-import weka.core.converters.ArffSaver;
 import weka.core.converters.ConverterUtils.DataSource;
 import weka.filters.Filter;
 import weka.filters.supervised.attribute.AttributeSelection;
+import weka.filters.unsupervised.attribute.StringToNominal;
 
-import java.io.File;
 import java.io.FileWriter;
 
 public class FSS {
-    public static void main(){
+    private static String BoWTrainArff = "src/x_out/Data/train/BoW_train.arff";
+    private static String fssTrainArff = "src/x_out/Data/train/FSS_train.arff";
+    private static String dictionaryTxt = "src/x_out/Data/dictionary.txt";
+    private static int wordsToKeep = 2000;
+    public static void FSS(){
         try {
-            fss("src/x_out/BoW_train.arff");
+            fss();
         }
         catch (Exception e){
             e.printStackTrace();
@@ -22,26 +25,46 @@ public class FSS {
 
     }
 
-    public static void fss(String arffPath) throws Exception {
+    public static void fss() throws Exception {
 
-        DataSource source = new DataSource(arffPath);
+        DataSource source = new DataSource(BoWTrainArff);
         Instances data = source.getDataSet();
 
         if (data.classIndex() == -1) {
             data.setClassIndex(data.attribute("claseValue").index());
         }
 
-        AttributeSelection filter = new AttributeSelection();
+        StringToNominal convert = new StringToNominal();
+        String[] options = new String[2];
+        options[0] = "-R"; // "range"
+        options[1] = String.valueOf(data.attribute("idValue").index() + 1); // indicates the index of the string attribute, assuming it's the last
+        convert.setOptions(options);
+        convert.setInputFormat(data);
+
+        Instances newData = Filter.useFilter(data, convert);
+
         Ranker ranker = new Ranker();
-        ranker.setNumToSelect(10); // Número de atributos seleccionados
-        filter.setEvaluator(new GainRatioAttributeEval());
+        //ranker.setThreshold(0.1);
+        ranker.setNumToSelect(wordsToKeep); // Número de atributos seleccionados
+
+        AttributeSelection filter = new AttributeSelection();
+        filter.setEvaluator(new InfoGainAttributeEval());
         filter.setSearch(ranker);
-        filter.setInputFormat(data);
-        Instances dataFiltered = Filter.useFilter(data, filter);
+        filter.setInputFormat(newData);
+        Instances dataFiltered = Filter.useFilter(newData, filter);
 
         //Gorde .arff -a
-        FileWriter fwTrain = new FileWriter("src/x_out/FSS_train.arff");
+        FileWriter fwTrain = new FileWriter(fssTrainArff);
         fwTrain.write(dataFiltered.toString());
         fwTrain.close();
+
+        FileWriter fw = new FileWriter(dictionaryTxt); //hiztegia gordetzeko
+        for (int i=0; i<dataFiltered.numAttributes()-1; i++) {
+            if(dataFiltered.attribute(i).isNumeric()){
+                String s = dataFiltered.attribute(i).name();
+                fw.write(s + "\n");
+            }
+        }
+        fw.close();
     }
 }

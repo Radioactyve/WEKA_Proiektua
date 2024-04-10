@@ -1,36 +1,34 @@
 package Data;
 
-import weka.attributeSelection.BestFirst;
-import weka.attributeSelection.CfsSubsetEval;
 import weka.core.Instances;
-import weka.core.converters.ArffSaver;
-import weka.core.converters.ConverterUtils;
+import weka.core.converters.ConverterUtils.DataSource;
 import weka.core.tokenizers.WordTokenizer;
 import weka.filters.Filter;
-import weka.filters.supervised.attribute.AttributeSelection;
 import weka.filters.unsupervised.attribute.StringToWordVector;
 import weka.filters.unsupervised.instance.SparseToNonSparse;
 
-import java.io.File;
+import java.io.FileWriter;
 
 public class S2WData {
     private static int maxWords = 20000;
-    public static void main (){
+    private static String newTrainArff = "src/x_out/Data/train/new_train.arff";
+    private static String BoWTrainArff = "src/x_out/Data/train/BoW_train.arff";
+    public static void S2WData (){
         try {
-            s2w("src/x_out/new_train.arff");
+            s2w();
         } catch (Exception e){
             e.printStackTrace();
         }
 
     }
 
-    private static void s2w(String arffPath) throws Exception {
+    private static void s2w() throws Exception {
         // Kargatu entrenamendu datuak
-        ConverterUtils.DataSource trainSource = new ConverterUtils.DataSource(arffPath);
-        Instances trainData = trainSource.getDataSet();
+        DataSource trainSource = new DataSource(newTrainArff);
+        Instances data = trainSource.getDataSet();
 
-        if (trainData.classIndex() == -1){
-            trainData.setClassIndex(1);
+        if (data.classIndex() == -1) {
+            data.setClassIndex(data.attribute("claseValue").index());
         }
 
         // Sortu eta konfiguratu StringToWordVector filtroa
@@ -38,17 +36,16 @@ public class S2WData {
         filter.setOutputWordCounts(false);
         filter.setWordsToKeep(maxWords);
         filter.setLowerCaseTokens(true);
-        filter.setAttributeIndices("3");
-        filter.setDictionaryFileToSaveTo(new File("src/x_out/dictionary.txt"));
+        filter.setAttributeIndices(String.valueOf(data.attribute("textValue").index()));
 
         //Tokenizer
         WordTokenizer tokenizer = new WordTokenizer();
         tokenizer.setDelimiters(".,`´@%$/¿[]{}>*+^\"?!\n -="); // Guretzat garrantzitsua da _ mantentzea
         filter.setTokenizer(tokenizer);
 
-        filter.setInputFormat(trainData);
+        filter.setInputFormat(data);
 
-        Instances train = Filter.useFilter(trainData, filter);
+        Instances train = Filter.useFilter(data, filter);
 
         //Sparsetik Non Sparsera bihurtu
         SparseToNonSparse nonSparse = new SparseToNonSparse();
@@ -57,9 +54,8 @@ public class S2WData {
         Instances dataNonSparse = Filter.useFilter(train, nonSparse);
 
         //Gorde .arff -a
-        ArffSaver saver = new ArffSaver();
-        saver.setFile(new File("src/x_out/BoW_train.arff"));
-        saver.setInstances(dataNonSparse);
-        saver.writeBatch();
+        FileWriter fwTrain = new FileWriter(BoWTrainArff);
+        fwTrain.write(dataNonSparse.toString());
+        fwTrain.close();
     }
 }

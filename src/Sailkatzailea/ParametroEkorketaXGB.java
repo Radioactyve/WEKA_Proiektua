@@ -1,3 +1,4 @@
+/*
 package Sailkatzailea;
 
 
@@ -175,4 +176,4 @@ public class ParametroEkorketaXGB {
         return dMatrix;
     }
 }
-
+ */
