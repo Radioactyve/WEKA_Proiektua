@@ -1,0 +1,23 @@
+<component name="libraryTable">
+  <library name="ai.h2o.xgboost4j" type="repository">
+    <properties maven-id="ai.h2o:xgboost4j:0.90.3" />
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/ai/h2o/xgboost4j/0.90.3/xgboost4j-0.90.3.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/com/typesafe/akka/akka-actor_2.11/2.3.11/akka-actor_2.11-2.3.11.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/com/typesafe/config/1.2.1/config-1.2.1.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/com/esotericsoftware/kryo/kryo/2.21/kryo-2.21.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/com/esotericsoftware/reflectasm/reflectasm/1.07/reflectasm-1.07-shaded.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/org/ow2/asm/asm/4.0/asm-4.0.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/com/esotericsoftware/minlog/minlog/1.2/minlog-1.2.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/org/objenesis/objenesis/1.2/objenesis-1.2.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/org/scala-lang/scala-compiler/2.11.8/scala-compiler-2.11.8.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/org/scala-lang/modules/scala-xml_2.11/1.0.4/scala-xml_2.11-1.0.4.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/org/scala-lang/modules/scala-parser-combinators_2.11/1.0.4/scala-parser-combinators_2.11-1.0.4.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/org/scala-lang/scala-reflect/2.11.8/scala-reflect-2.11.8.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/org/scala-lang/scala-library/2.11.8/scala-library-2.11.8.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/commons-logging/commons-logging/1.2/commons-logging-1.2.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
