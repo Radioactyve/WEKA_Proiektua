@@ -1,9 +1,9 @@
 package Data;
 
 import weka.core.Instances;
-import weka.core.converters.ConverterUtils;
+import weka.core.converters.ConverterUtils.DataSource;
 import weka.filters.Filter;
-import weka.filters.supervised.instance.StratifiedRemoveFolds;
+import weka.filters.supervised.instance.Resample;
 
 import java.io.*;
 
@@ -16,6 +16,7 @@ public class NewStratifiedHoldOut {
         }
         catch (Exception e){
             System.out.println("Errore bat egon da datuak juntatu eta banatzerakoan");
+            e.printStackTrace();
         }
 
     }
@@ -60,10 +61,10 @@ public class NewStratifiedHoldOut {
             // Cerrar el archivo de salida
             writer.close();
 
-            System.out.println("Los archivos ARFF han sido combinados exitosamente.");
+            System.out.println("Ondo juntatu dira ARFF-ak.");
         } catch (IOException e) {
             e.printStackTrace();
-            System.out.println("Ocurrió un error al combinar los archivos.");
+            System.out.println("Errore bat egon da datuak juntatzerakoan.");
         }
     }
 
@@ -71,46 +72,40 @@ public class NewStratifiedHoldOut {
 
     private static void banatu() throws Exception {
         // Datuak kargatu
-        ConverterUtils.DataSource source = new ConverterUtils.DataSource("src/x_out/combined.arff");
+        DataSource source = new DataSource("src/x_out/combined.arff");
         Instances data = source.getDataSet();
-        System.out.println(data.numInstances());
 
         // Klase atributua ezarri, normalean azkena izaten da
         if (data.classIndex() == -1){
             data.setClassIndex(1);
         }
 
-        StratifiedRemoveFolds filter = new StratifiedRemoveFolds();
+        // -------------[STRATIFIED BANAKETA]-----------
+        // Settings
+        Resample resampleFilter = new Resample();
+        resampleFilter.setInputFormat(data);
+        resampleFilter.setNoReplacement(true);
+        resampleFilter.setSampleSizePercent(70.0);
+        resampleFilter.setInvertSelection(false);
 
-        filter.setNumFolds(10);
-        filter.setFold(1);
-        filter.setInvertSelection(true);
-        filter.setInputFormat(data);
-
-        Instances train = Filter.useFilter(data, filter);
-        System.out.println(train.numInstances());
-
-        filter.setInvertSelection(false);
-        filter.setInputFormat(data);
-
-        Instances dev = Filter.useFilter(data, filter);
-        System.out.println(dev.numInstances());
+        // Train
+        Instances trainData = Filter.useFilter(data, resampleFilter);
 
 
-
-
-
-        /*
+        // Dev
+        resampleFilter.setInputFormat(data);
+        resampleFilter.setSampleSizePercent(70.0);
+        resampleFilter.setInvertSelection(true);
+        Instances devData = Filter.useFilter(data, resampleFilter);
 
         //Gorde artxiboak (falta)
         FileWriter fwTrain = new FileWriter("src/x_out/new_train.arff");
-        fwTrain.write(train.toString());
+        fwTrain.write(trainData.toString());
         fwTrain.close();
 
         FileWriter fwDev = new FileWriter("src/x_out/new_dev.arff");
-        fwDev.write(dev.toString());
+        fwDev.write(devData.toString());
         fwDev.close();
 
-         */
     }
 }

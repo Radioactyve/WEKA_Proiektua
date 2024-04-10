@@ -9,6 +9,7 @@ import weka.filters.Filter;
 import weka.filters.supervised.attribute.AttributeSelection;
 
 import java.io.File;
+import java.io.FileWriter;
 
 public class FSS {
     public static void main(){
@@ -27,19 +28,20 @@ public class FSS {
         Instances data = source.getDataSet();
 
         if (data.classIndex() == -1) {
-            data.setClassIndex(1);
+            data.setClassIndex(data.attribute("claseValue").index());
         }
 
         AttributeSelection filter = new AttributeSelection();
+        Ranker ranker = new Ranker();
+        ranker.setNumToSelect(10); // Número de atributos seleccionados
         filter.setEvaluator(new GainRatioAttributeEval());
-        filter.setSearch(new Ranker());
+        filter.setSearch(ranker);
         filter.setInputFormat(data);
         Instances dataFiltered = Filter.useFilter(data, filter);
 
         //Gorde .arff -a
-        ArffSaver saver = new ArffSaver();
-        saver.setFile(new File("src/x_out/FSS_train.arff"));
-        saver.setInstances(dataFiltered);
-        saver.writeBatch();
+        FileWriter fwTrain = new FileWriter("src/x_out/FSS_train.arff");
+        fwTrain.write(dataFiltered.toString());
+        fwTrain.close();
     }
 }

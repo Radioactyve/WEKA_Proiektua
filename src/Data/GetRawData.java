@@ -82,10 +82,10 @@ public class GetRawData {
         ) {
             // ARFF-aren goiburua idatzi
             pw.println("@relation IberLef-Challenge");
-            pw.println("@attribute 'id' string");
-            pw.println("@attribute 'clase' {0,1}");
-            pw.println("@attribute 'text' string");
-            pw.println("@attribute 'date' date 'yyyy-MM-dd HH:mm:ss'");
+            pw.println("@attribute 'idValue' string");
+            pw.println("@attribute 'claseValue' {0,1}");
+            pw.println("@attribute 'textValue' string");
+            pw.println("@attribute 'dateValue' date 'yyyy-MM-dd HH:mm:ss'");
             pw.println("@data");
 
             String line;
@@ -119,7 +119,6 @@ public class GetRawData {
         //File finala = new File("src/x_out/final_" + csvPath);
         //finala.delete();
 
-
     }
 
     private static List<String> parseLine(String line) {
@@ -151,9 +150,7 @@ public class GetRawData {
 
     public static void modifyCsvWithPhrases(String csvPath, List<String> emojiSet, String outputPath) {
         /**
-         * Metodo honek bi String motako parametro hartzen ditu, lehenengoa csv-aren path-a eta bigarrena arff baten path-a
-         * Metodoak adierazitako csv-an dauden datuak hartzen ditu eta hauekin arff bat sortzen du (jada existitzen ez bada) eta
-         * csv-an dauden datuak arff moduan idazten ditu
+         * Emoji
          * */
         try (BufferedReader br = new BufferedReader(new FileReader("src/x_in/" +csvPath));
              BufferedWriter bw = new BufferedWriter(new FileWriter(outputPath))) {

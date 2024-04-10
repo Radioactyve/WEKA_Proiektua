@@ -17,7 +17,7 @@ public class S2WData {
     private static int maxWords = 20000;
     public static void main (){
         try {
-            s2w("new_train.arff");
+            s2w("src/x_out/new_train.arff");
         } catch (Exception e){
             e.printStackTrace();
         }
@@ -38,11 +38,12 @@ public class S2WData {
         filter.setOutputWordCounts(false);
         filter.setWordsToKeep(maxWords);
         filter.setLowerCaseTokens(true);
+        filter.setAttributeIndices("3");
         filter.setDictionaryFileToSaveTo(new File("src/x_out/dictionary.txt"));
 
         //Tokenizer
         WordTokenizer tokenizer = new WordTokenizer();
-        tokenizer.setDelimiters(".;:'\"()?!\n -"); // Guretzat garrantzitsua da _ mantentzea
+        tokenizer.setDelimiters(".,`´@%$/¿[]{}>*+^\"?!\n -="); // Guretzat garrantzitsua da _ mantentzea
         filter.setTokenizer(tokenizer);
 
         filter.setInputFormat(trainData);

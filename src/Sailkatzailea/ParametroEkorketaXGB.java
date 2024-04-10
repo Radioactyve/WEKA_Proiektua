@@ -3,26 +3,20 @@
 package Sailkatzailea;
 
 
+import ml.dmlc.xgboost4j.java.Booster;
+import ml.dmlc.xgboost4j.java.DMatrix;
 import ml.dmlc.xgboost4j.java.XGBoost;
 import ml.dmlc.xgboost4j.java.XGBoostError;
-import weka.classifiers.Classifier;
 import weka.classifiers.Evaluation;
-import weka.classifiers.trees.RandomForest;
 import weka.core.AttributeStats;
 import weka.core.Instances;
 import weka.core.converters.ConverterUtils;
 
-
 import java.io.BufferedWriter;
 import java.io.FileWriter;
-import java.security.interfaces.DSAParams;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
-import ml.dmlc.xgboost4j.java.Booster;
-import ml.dmlc.xgboost4j.java.DMatrix;
-
-import javax.xml.crypto.Data;
 
 
 public class ParametroEkorketaXGB {
@@ -174,3 +168,4 @@ public class ParametroEkorketaXGB {
 }
 
  */
+

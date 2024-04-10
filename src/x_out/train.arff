@@ -1,8 +1,8 @@
 @relation IberLef-Challenge
-@attribute 'id' string
-@attribute 'clase' {0,1}
-@attribute 'text' string
-@attribute 'date' date 'yyyy-MM-dd HH:mm:ss'
+@attribute 'idValue' string
+@attribute 'claseValue' {0,1}
+@attribute 'textValue' string
+@attribute 'dateValue' date 'yyyy-MM-dd HH:mm:ss'
 @data
 subject118,1,"Vengo a pedir consejos cara_sonriendo_con_sudor_frío","2021-04-19 00:53:00"
 subject118,1,"Mi novio me terminó","2021-04-19 00:53:00"

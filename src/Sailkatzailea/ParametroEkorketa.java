@@ -1,21 +1,14 @@
 package Sailkatzailea;
 
-
-
-
 import weka.classifiers.Evaluation;
 import weka.classifiers.trees.RandomForest;
 import weka.core.AttributeStats;
 import weka.core.Instances;
 import weka.core.converters.ConverterUtils.DataSource;
 
-
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.util.Random;
-
-
-
 
 public class ParametroEkorketa {
 

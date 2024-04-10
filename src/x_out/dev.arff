@@ -1,8 +1,8 @@
 @relation IberLef-Challenge
-@attribute 'id' string
-@attribute 'clase' {0,1}
-@attribute 'text' string
-@attribute 'date' date 'yyyy-MM-dd HH:mm:ss'
+@attribute 'idValue' string
+@attribute 'claseValue' {0,1}
+@attribute 'textValue' string
+@attribute 'dateValue' date 'yyyy-MM-dd HH:mm:ss'
 @data
 subject105,0,"Pues las 4 y 20 de la tarde por supuesto","2021-07-18 21:19:00"
 subject105,0,"Hay alguna manera de ayudarte con eso ?","2021-07-18 21:19:00"
