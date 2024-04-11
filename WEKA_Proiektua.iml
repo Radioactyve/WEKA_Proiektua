@@ -17,7 +17,7 @@
     <orderEntry type="library" name="kryo-2.23.0" level="project" />
     <orderEntry type="library" name="apache.commons.csv" level="project" />
     <orderEntry type="library" name="jfree.jfreechart" level="project" />
-    <orderEntry type="library" name="weka" level="project" />
     <orderEntry type="library" name="ai.h2o.xgboost4j" level="project" />
+    <orderEntry type="library" name="weka" level="project" />
   </component>
 </module>

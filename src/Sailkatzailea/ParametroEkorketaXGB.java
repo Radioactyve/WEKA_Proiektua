@@ -1,4 +1,3 @@
-/*
 package Sailkatzailea;
 
 
@@ -6,6 +5,7 @@ import ml.dmlc.xgboost4j.java.XGBoost;
 import ml.dmlc.xgboost4j.java.XGBoostError;
 import weka.classifiers.Evaluation;
 import weka.core.AttributeStats;
+import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.converters.ConverterUtils;
 
@@ -49,31 +49,15 @@ public class ParametroEkorketaXGB {
                 }
             }
 
-
-            //Klase minoritarioa kalkulatu
-            AttributeStats attrStats = data.attributeStats(data.numAttributes() - 1);
-            int minoritarioa = -1;
-            double KlaseMinoMaiz = 0;
-            for (int i = 0; i < data.numClasses(); i++) {
-                System.out.println("i: " + i + "; izena: " + data.attribute(data.numAttributes() - 1).value(i) + "; maiztasuna: " + attrStats.nominalCounts[i]);
-                if (KlaseMinoMaiz > attrStats.nominalCounts[i]) {
-                    minoritarioa = i;
-                    KlaseMinoMaiz = attrStats.nominalCounts[i];
-                }
-            }
-
-
             //Parametroak sortu eta hasieratu 0 ra
-            double optFMeasure = 0.0;
-
-
+            double optFScore = 0.0;
             int NumItOpt = 0;
             double LearnRateOpT = 0;
             int MDopt = 0;
             double SSCopt = 0;
             double SSRopt = 0;
             double Aopt = 0;
-            double Gopt = 0;
+            double Lopt = 0;
 
 
             long denbOpt = 0;
@@ -103,19 +87,40 @@ public class ParametroEkorketaXGB {
                                         parametroak.put("subsample_cols", String.valueOf(SC));  // SubsampleCols
                                         parametroak.put("alpha", String.valueOf(A));  // Alpha
                                         parametroak.put("lambda", String.valueOf(L));  // Lambda
-
+                                        long Hasiera = System.nanoTime();
                                         Booster booster = XGBoost.train(dataXGB, parametroak, NI, null, null, null);
 
+                                        float[][] predictions = booster.predict(devXGB);
+                                        int prediction=0;
+                                        int tp=0;
+                                        int fp=0;
+                                        int fn=0;
 
-                                        //Seguir desde aqui
+                                        for (int i = 0; i < predictions.length; i++) {
+                                            if (predictions[i][0] > 0.5 ){
+                                                prediction=1;
+                                            }
+                                            else {prediction=0;}
+                                            if (prediction == 1 && dev.instance(i).classValue() == 1) {
+                                                tp++;
+                                            } else if (prediction == 1 && dev.instance(i).classValue() == 0) {
+                                                fp++;
+                                            } else if (prediction == 0 && dev.instance(i).classValue() == 1) {
+                                                fn++;
+                                            }
 
-                                        long Hasiera = System.nanoTime();
-                                        Evaluation evaluator = new Evaluation(data);
-                                        evaluator.crossValidateModel(booster, data, 10, new Random(1));
+                                        }
+                                        //precision
+                                        double precision = (double) tp / (tp + fp);
+                                        //recall
+                                        double recall = (double) tp / (tp + fn);
+                                        //FScore
+                                        double FScore = 2 * (precision * recall) / (precision + recall);
+
                                         long Amaiera = System.nanoTime();
-                                        long exDenb = Amaiera - Hasiera;
-                                        double Fmeasure = evaluator.fMeasure(minoritarioa);
-                                        datuak = new String[]{String.valueOf(PN), String.valueOf(BSP), String.valueOf(MD), String.valueOf(NT), String.valueOf(Fmeasure), String.valueOf(exDenb)};
+                                        long exDenb=Amaiera-Hasiera;
+
+                                        datuak = new String[]{String.valueOf(NI), String.valueOf(LR), String.valueOf(MD), String.valueOf(SR), String.valueOf(SC),String.valueOf(SR), String.valueOf(A), String.valueOf(L), String.valueOf(FScore), String.valueOf(exDenb)};
                                         for (int i = 0; i < datuak.length; i++) {
                                             writer.write(datuak[i]);
                                             if (i < datuak.length - 1) {
@@ -123,37 +128,34 @@ public class ParametroEkorketaXGB {
                                             }
                                         }
                                         writer.newLine();
-                                        if (evaluator.fMeasure(minoritarioa) > optFMeasure) {
-                                            optFMeasure = evaluator.fMeasure(minoritarioa);
-                                            PNopt = PN;
-                                            BSPopt = BSP;
-                                            NTopt = NT;
-                                            denbOpt = exDenb;
-                                        } else if (evaluator.fMeasure(minoritarioa) == optFMeasure && exDenb < denbOpt) {
-                                            optFMeasure = evaluator.fMeasure(minoritarioa);
-                                            PNopt = PN;
-                                            BSPopt = BSP;
-                                            NTopt = NT;
-
-
+                                        if ((FScore > optFScore)||(FScore == optFScore && exDenb < denbOpt)) {
+                                            optFScore= FScore;
+                                            NumItOpt = NI;
+                                            LearnRateOpT = LR;
+                                            MDopt = MD;
+                                            SSCopt = SR;
+                                            SSRopt = SC;
+                                            Aopt = A;
+                                            Lopt = L;
                                             denbOpt = exDenb;
                                         }
                                     }
-
-
                                 }
                             }
                         }
                     }
                 }
                 System.out.println("Parametro optimoak hauek dira:");
-                System.out.println("P/Nratio: " + PNopt);
-                System.out.println("BagSizePercentage: " + BSPopt);
+                System.out.println("NumIterations: " + NumItOpt);
+                System.out.println("LeraningRate: " + LearnRateOpT);
                 System.out.println("MaxDepth: " + MDopt);
-                System.out.println("NumTree: " + NTopt);
+                System.out.println("SubsampleRows: " + SSRopt);
+                System.out.println("SubsampleCols: " + SSCopt);
+                System.out.println("Alpha: " + Aopt);
+                System.out.println("Lambda: " + Lopt);
                 System.out.println();
                 System.out.println("Eta hauek dira emaitzak:");
-                System.out.println("F-measure: " + optFMeasure);
+                System.out.println("F-measure: " + optFScore);
                 System.out.println("Exekuzio denbora: " + denbOpt);
             }
         }
@@ -176,4 +178,3 @@ public class ParametroEkorketaXGB {
         return dMatrix;
     }
 }
- */
