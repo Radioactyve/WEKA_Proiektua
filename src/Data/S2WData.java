@@ -36,7 +36,7 @@ public class S2WData {
         filter.setOutputWordCounts(false);
         filter.setWordsToKeep(maxWords);
         filter.setLowerCaseTokens(true);
-        filter.setAttributeIndices(String.valueOf(data.attribute("textValue").index()));
+        filter.setAttributeIndices(String.valueOf(data.attribute("textValue").index()+1));
 
         //Tokenizer
         WordTokenizer tokenizer = new WordTokenizer();

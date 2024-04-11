@@ -11,8 +11,8 @@ public class GetRawData {
 
     private static String pathIn = "src/x_in/";
     private static String pathOut = "src/x_out/Data/";
-    private static String modified = "modified.arff";
-    private static String finala = "final.arff";
+    private static String modified = "/modified_";
+    private static String finala = "/final_";
     private static String emojiList = "src/x_in/emoji.txt";
 
     public static void GetRawData(String csvName, String arffPath) {
@@ -31,10 +31,10 @@ public class GetRawData {
             e.printStackTrace();
         }
 
-        String modifiedPath = pathOut + csvName + modified;
+        String modifiedPath = pathOut + csvName + modified + csvName + ".csv";
         emojiModify(csvName, emojis, modifiedPath);
 
-        String finalPath = pathOut + csvName + finala;
+        String finalPath = pathOut + csvName + finala + csvName + ".csv";
         csvFinal(modifiedPath, finalPath);
 
         try (
@@ -87,7 +87,7 @@ public class GetRawData {
          * Datuetan agertzen diren emojiak aldatzen ditu hitz bakar bat bezala kontsidera daitezen,
          * hau da, emojiaren erdian dauden espazioak _-az aldatzen ditu
          * */
-        try (BufferedReader br = new BufferedReader(new FileReader(pathIn + csvPath + ".arff"));
+        try (BufferedReader br = new BufferedReader(new FileReader(pathIn + csvPath + ".csv"));
              BufferedWriter bw = new BufferedWriter(new FileWriter(outputPath))) {
             String line;
             while ((line = br.readLine()) != null) {

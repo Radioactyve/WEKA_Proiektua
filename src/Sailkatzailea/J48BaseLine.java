@@ -17,6 +17,9 @@ public class J48BaseLine {
         }
 
         J48 j48 = new J48();
+        String[] options = new String[1];
+        options[0] = "-U"; // Usar un árbol sin poda
+        j48.setOptions(options);
         j48.buildClassifier(data);
 
         //Modeloa gorde
