@@ -13,8 +13,6 @@
     <orderEntry type="jdk" jdkName="20" jdkType="JavaSDK" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="Python 3.10 (WEKA_Proiektua) interpreter library" level="application" />
-    <orderEntry type="library" name="xgboost4j_2.11-1.1.0-criteo-20200812-071ef500-win64" level="project" />
-    <orderEntry type="library" name="kryo-2.23.0" level="project" />
     <orderEntry type="library" name="apache.commons.csv" level="project" />
     <orderEntry type="library" name="jfree.jfreechart" level="project" />
     <orderEntry type="library" name="ai.h2o.xgboost4j" level="project" />

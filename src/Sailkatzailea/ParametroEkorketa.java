@@ -14,20 +14,19 @@ public class ParametroEkorketa {
 
 
     public static void main(String[] args) throws Exception {
-        if (args.length != 2) {
-            System.out.println("Parametroak sartzean akats bat izan duzu!");
-            System.out.println("Parametroen forma:");
-            System.out.println(" java -jar ParametroEkorketa.jar train.arff dev.arff");
-        } else {
             //Datuak kargatu
-            DataSource dataSource = new DataSource(args[0]);
+            DataSource dataSource = new DataSource("src/x_out/Data/dev/compatible_dev.arff");
             Instances data = dataSource.getDataSet();
-            data.setClassIndex(data.numAttributes()-1);
+            if (data.classIndex() == -1) {
+                data.setClassIndex(data.attribute("claseValue").index());
+            }
 
 
-            DataSource dataSource1 = new DataSource(args[1]);
+            DataSource dataSource1 = new DataSource("src/x_out/Data/train/FSS_train.arff");
             Instances dataDev = dataSource1.getDataSet();
-            dataDev.setClassIndex(dataDev.numAttributes()-1);
+            if (dataDev.classIndex() == -1) {
+                dataDev.setClassIndex(data.attribute("claseValue").index());
+            }
 
 
             //CSV fitxategia sortu eta hasierako infromazioa sartu
@@ -49,17 +48,17 @@ public class ParametroEkorketa {
 
 
             //Klase minoritarioa kalkulatu
-            AttributeStats attrStats = data.attributeStats(data.numAttributes() - 1);
+            AttributeStats attrStats = data.attributeStats(data.attribute("claseValue").index());
             int minoritarioa = -1;
-            double KlaseMinoMaiz = 0;
+            double KlaseMinoMaiz = Integer.MAX_VALUE;
             for(int i=0; i<data.numClasses(); i++){
-                System.out.println("i: " + i + "; izena: " + data.attribute(data.numAttributes()-1).value(i) + "; maiztasuna: " + attrStats.nominalCounts[i]);
+                System.out.println("i: " + i + "; izena: " + data.attribute(data.attribute("claseValue").index()).value(i) + "; maiztasuna: " + attrStats.nominalCounts[i]);
                 if (KlaseMinoMaiz > attrStats.nominalCounts[i]){
                     minoritarioa = i;
                     KlaseMinoMaiz = attrStats.nominalCounts[i];
                 }
             }
-
+            System.out.println(minoritarioa);
 
             //Parametroak sortu eta hasieratu 0 ra
             double optFMeasure = 0.0;
@@ -70,25 +69,25 @@ public class ParametroEkorketa {
             long denbOpt= 0;
             String[] datuak={};
 
-
+            int loop =0;
             //Random forest-a sortu eta atributuen erro karratua
             RandomForest RF= new RandomForest();
             int erroAtributu=(int)(Math.sqrt(data.numAttributes()));
             //PN ratio
-            for (int PN=0;PN<erroAtributu;PN+=1) { //atributuen erroa bainon txikiagorarte
+            for (int PN=0;PN<erroAtributu;PN+=10) { //atributuen erroa bainon txikiagorarte
                 RF.setNumFeatures(PN);
                 //BagSizePercentage
                 for (int BSP=1;BSP<25;BSP+=4){//Gure kasuan datu askorekin lan egingo dugunez, portzentai txiki bat erabiliko dugu. 4%-ko saltoak
                     RF.setBagSizePercent(BSP);
                     //maxDepth
-                    for (int MD=1;MD<erroAtributu;MD=1){
+                    for (int MD=1;MD<erroAtributu;MD=10){
                         RF.setMaxDepth(MD);
                         //numTree
                         for (int NT=50;NT<200;NT+=25){
                             RF.setNumIterations(NT);
                             long Hasiera = System.nanoTime();
                             Evaluation evaluator = new Evaluation(data);
-                            evaluator.crossValidateModel(RF, dataDev, 10, new Random(1));
+                            evaluator.crossValidateModel(RF, data, 10, new Random(1));
                             long Amaiera = System.nanoTime();
                             long exDenb=Amaiera-Hasiera;
                             double Fmeasure = evaluator.fMeasure(minoritarioa);
@@ -100,6 +99,8 @@ public class ParametroEkorketa {
                                 }
                             }
                             writer.newLine();
+                            loop++;
+                            System.out.println(loop);
                             if(evaluator.fMeasure(minoritarioa)>optFMeasure){
                                 optFMeasure = evaluator.fMeasure(minoritarioa);
                                 PNopt = PN;
@@ -138,6 +139,6 @@ public class ParametroEkorketa {
             System.out.println("Eta hauek dira emaitzak:");
             System.out.println("F-measure: "+optFMeasure);
             System.out.println("Exekuzio denbora: "+denbOpt);
-        }
     }
+
 }

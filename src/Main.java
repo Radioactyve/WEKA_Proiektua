@@ -4,6 +4,7 @@ import Sailkatzailea.*;
 
 public class Main {
     public static void main(String[] args) throws Exception {
+        /*
         GetRawData.GetRawData("train", "src/x_out/Data/train/train.arff");
         GetRawData.GetRawData("dev", "src/x_out/Data/dev/dev.arff");
         GetRawData.GetRawData("test", "src/x_out/Data/test/test.arff");
@@ -17,5 +18,7 @@ public class Main {
         J48BaseLine.main("src/x_out/Data/test/compatible_test.arff");
 
         Iragarpenak.main();
+
+         */
     }
 }
