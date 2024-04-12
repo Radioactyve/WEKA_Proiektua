@@ -11,12 +11,15 @@ import weka.filters.unsupervised.attribute.StringToNominal;
 import java.io.FileWriter;
 
 public class FSS {
-    private static String BoWTrainArff = "src/x_out/Data/train/BoW_train.arff";
-    private static String fssTrainArff = "src/x_out/Data/train/FSS_train.arff";
-    private static String dictionaryTxt = "src/x_out/Data/dictionary.txt";
+    private static String BoWTrainArff;
+    private static String fssTrainArff;
+    private static String dictionaryTxt;
     private static int wordsToKeep = 2000;
-    public static void FSS(){
+    public static void FSS(String BoWTrainArffIn, String fssTrainArffIn, String dictionaryTxtIn){
         try {
+            BoWTrainArff = BoWTrainArffIn;
+            fssTrainArff = fssTrainArffIn;
+            dictionaryTxt = dictionaryTxtIn;
             fss();
         }
         catch (Exception e){

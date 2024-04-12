@@ -14,7 +14,7 @@ import java.io.FileWriter;
 
 public class Iragarpenak {
     public static  void main() throws Exception {
-        String modelPath = "src/x_out/Sailkatzailea/Modeloak/j48.model";
+        String modelPath = "src/x_out/Sailkatzailea/j48.model";
         String testPath = "src/x_out/Data/test/compatible_test.arff";
         String outputPath = "src/x_out/Iragarpenak/iragarpenakBaseLine.txt";
 
@@ -23,7 +23,7 @@ public class Iragarpenak {
         DataSource source = new DataSource(testPath);
         Instances data = source.getDataSet();
         if (data.classIndex()==-1){
-            data.setClassIndex(data.numAttributes()-1);
+            data.setClassIndex(0);
         }
 
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(outputPath))) {

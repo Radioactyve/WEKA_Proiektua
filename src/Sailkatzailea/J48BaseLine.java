@@ -6,14 +6,12 @@ import weka.core.SerializationHelper;
 import weka.core.converters.ConverterUtils.DataSource;
 
 public class J48BaseLine {
-    public static void main(String args) throws Exception {
+    public static void main(String trainArff) throws Exception {
 
-        DataSource source = new DataSource(args);
+        DataSource source = new DataSource(trainArff);
         Instances data = source.getDataSet();
-
-        // Asegura que el atributo de clase está correctamente establecido
         if (data.classIndex() == -1) {
-            data.setClassIndex(data.numAttributes() - 1); // Normalmente el último atributo
+            data.setClassIndex(data.numAttributes() - 1);
         }
 
         J48 j48 = new J48();
@@ -23,6 +21,6 @@ public class J48BaseLine {
         j48.buildClassifier(data);
 
         //Modeloa gorde
-        SerializationHelper.write("src/x_out/Sailkatzailea/Modeloak/j48.model", j48);
+        SerializationHelper.write("src/x_out/Sailkatzailea/j48.model", j48);
     }
 }

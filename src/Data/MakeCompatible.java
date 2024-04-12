@@ -9,9 +9,10 @@ import weka.filters.unsupervised.instance.SparseToNonSparse;
 import java.io.*;
 
 public class MakeCompatible {
-    private static String dictionaryTxt = "src/x_out/Data/dictionary.txt";
-    public static void MakeCompatible(String path, String output){
+    private static String dictionaryTxt;
+    public static void MakeCompatible(String path, String output, String dictionaryTxtIn){
         try{
+            dictionaryTxt = dictionaryTxtIn;
             compatible(path, output);
         } catch (Exception e){
             e.printStackTrace();

@@ -11,10 +11,13 @@ import java.io.FileWriter;
 
 public class S2WData {
     private static int maxWords = 20000;
-    private static String newTrainArff = "src/x_out/Data/train/new_train.arff";
-    private static String BoWTrainArff = "src/x_out/Data/train/BoW_train.arff";
-    public static void S2WData (){
+    private static String newTrainArff;
+    private static String BoWTrainArff;
+
+    public static void S2WData (String newTrainArffIn, String BoWTrainArffIn){
         try {
+            newTrainArff = newTrainArffIn;
+            BoWTrainArff = BoWTrainArffIn;
             s2w();
         } catch (Exception e){
             e.printStackTrace();

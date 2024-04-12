@@ -9,15 +9,21 @@ import java.io.*;
 
 public class NewStratifiedHoldOut {
 
-    private static String trainArff = "src/x_out/Data/train/train.arff";
-    private static String newTrainArff = "src/x_out/Data/train/new_train.arff";
-    private static String devArff = "src/x_out/Data/dev/dev.arff";
-    private static String newDevArff = "src/x_out/Data/dev/new_dev.arff";
-    private static String combinedArff = "src/x_out/Data/combined.arff";
+    private static String trainArff;
+    private static String newTrainArff;
+    private static String devArff;
+    private static String newDevArff;
+    private static String combinedArff;
 
 
-    public static void NewStratifiedHoldOut(int sampleSize) {
+    public static void NewStratifiedHoldOut(int sampleSize,String trainArffPath, String newTrainArffPath, String devArffPath, String newDevArffPath, String combinedArffPath) {
         try {
+            trainArff = trainArffPath;
+            newTrainArff = newTrainArffPath;
+            devArff = devArffPath;
+            newDevArff = newDevArffPath;
+            combinedArff = combinedArffPath;
+
             juntatu();
             banatu(sampleSize);
         }
