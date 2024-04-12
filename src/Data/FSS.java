@@ -63,7 +63,7 @@ public class FSS {
 
         FileWriter fw = new FileWriter(dictionaryTxt); //hiztegia gordetzeko
         for (int i=0; i<dataFiltered.numAttributes()-1; i++) {
-            if(dataFiltered.attribute(i).isNumeric()){
+            if(!dataFiltered.attribute(i).isDate()){
                 String s = dataFiltered.attribute(i).name();
                 fw.write(s + "\n");
             }

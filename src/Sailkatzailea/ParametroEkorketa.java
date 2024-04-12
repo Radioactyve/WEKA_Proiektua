@@ -27,7 +27,7 @@ public class ParametroEkorketa {
             DataSource dataSource1 = new DataSource("src/x_out/Data/train/FSS_train.arff");
             Instances dataDev = dataSource1.getDataSet();
             if (dataDev.classIndex() == -1) {
-                dataDev.setClassIndex(data.attribute("claseValue").index());
+                dataDev.setClassIndex(dataDev.attribute("claseValue").index());
             }
 
 

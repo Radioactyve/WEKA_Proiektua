@@ -15,7 +15,7 @@ import java.io.FileWriter;
 public class Iragarpenak {
     public static  void main() throws Exception {
         String modelPath = "src/x_out/Sailkatzailea/j48.model";
-        String testPath = "src/x_out/Data/test/compatible_test.arff";
+        String testPath = "src/x_out/Data/train/FSS_train.arff";
         String outputPath = "src/x_out/Iragarpenak/iragarpenakBaseLine.txt";
 
         J48 j48 = (J48) SerializationHelper.read(new FileInputStream(modelPath));
@@ -23,7 +23,7 @@ public class Iragarpenak {
         DataSource source = new DataSource(testPath);
         Instances data = source.getDataSet();
         if (data.classIndex()==-1){
-            data.setClassIndex(0);
+            data.setClassIndex(data.attribute("claseValue").index());
         }
 
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(outputPath))) {

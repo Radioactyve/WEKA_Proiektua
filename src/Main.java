@@ -1,8 +1,6 @@
 import Data.AnalizeData;
 import Iragarpenak.Iragarpenak;
-import Sailkatzailea.J48BaseLine;
 import Sailkatzailea.ParametroEkorketa;
-import Sailkatzailea.Prueba;
 
 import java.util.Scanner;
 
@@ -82,9 +80,9 @@ public class Main {
         Data.MakeCompatible.MakeCompatible(NEW_DEV_ARFF_PATH, COMPATIBLE_DEV_ARFF_PATH, DICTIONARY_TXT_PATH);
         Sailkatzailea.J48BaseLine.main(FSS_TRAIN_ARFF_PATH);
 
-        //ParametroEkorketa.main(new String[]{TRAIN_ARFF_PATH, DEV_ARFF_PATH});
+        ParametroEkorketa.main(new String[]{TRAIN_ARFF_PATH, DEV_ARFF_PATH});
         //Prueba.main(new String[]{});
-        J48BaseLine.main(FSS_TRAIN_ARFF_PATH);
+        //J48BaseLine.main(FSS_TRAIN_ARFF_PATH);
         Iragarpenak.main();
     }
 
