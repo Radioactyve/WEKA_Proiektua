@@ -14,12 +14,13 @@ public class FSS {
     private static String BoWTrainArff;
     private static String fssTrainArff;
     private static String dictionaryTxt;
-    private static int wordsToKeep = 2000;
-    public static void FSS(String BoWTrainArffIn, String fssTrainArffIn, String dictionaryTxtIn){
+    private static int wordsToKeep;
+    public static void FSS(String BoWTrainArffIn, String fssTrainArffIn, String dictionaryTxtIn, int wordsToKeepIn){
         try {
             BoWTrainArff = BoWTrainArffIn;
             fssTrainArff = fssTrainArffIn;
             dictionaryTxt = dictionaryTxtIn;
+            wordsToKeep = wordsToKeepIn;
             fss();
         }
         catch (Exception e){

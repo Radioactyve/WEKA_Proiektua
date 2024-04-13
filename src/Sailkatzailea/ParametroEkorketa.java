@@ -15,7 +15,7 @@ import java.util.Random;
 public class ParametroEkorketa {
 
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args, Boolean usePN, Boolean useBSP, Boolean useMD, Boolean useNT) throws Exception {
             //Datuak kargatu
             DataSource dataSource = new DataSource("src/x_out/Data/dev/compatible_dev.arff");
             Instances data = dataSource.getDataSet();
@@ -63,10 +63,6 @@ public class ParametroEkorketa {
             System.out.println(minoritarioa);
 
 
-
-
-
-            /*
             //Parametroak sortu eta hasieratu 0 ra
             double optFMeasure = 0.0;
             double PNopt = 0;
@@ -81,25 +77,42 @@ public class ParametroEkorketa {
             RandomForest RF= new RandomForest();
             RF.setNumExecutionSlots(Runtime.getRuntime().availableProcessors());
             int erroAtributu=(int)(Math.sqrt(data.numAttributes()));
+
+
             //PN ratio
             for (int PN=0;PN<erroAtributu;PN+=10) { //atributuen erroa bainon txikiagorarte
-                RF.setNumFeatures(PN);
                 //BagSizePercentage
                 for (int BSP=1;BSP<25;BSP+=4){//Gure kasuan datu askorekin lan egingo dugunez, portzentai txiki bat erabiliko dugu. 4%-ko saltoak
-                    RF.setBagSizePercent(BSP);
                     //maxDepth
                     for (int MD=1;MD<erroAtributu;MD=10){
-                        RF.setMaxDepth(MD);
                         //numTree
                         for (int NT=50;NT<200;NT+=25){
-                            RF.setNumIterations(NT);
+                            //loop count
+                            loop++;
+                            System.out.println(loop);
+
+                            //parametroak zehaztu
+                            if (usePN){
+                                RF.setNumFeatures(PN);
+                            }
+                            if (useBSP){
+                                RF.setBagSizePercent(BSP);
+                            }
+                            if (useMD){
+                                RF.setMaxDepth(MD);
+                            }
+                            if (useNT){
+                                RF.setNumIterations(NT);
+                            }
+
                             long Hasiera = System.nanoTime();
                             Evaluation evaluator = new Evaluation(data);
-                            evaluator.evaluateModel(RF,dataDev);
-                            //evaluator.crossValidateModel(RF, dataDev, 3, new Random(1));
+                            evaluator.crossValidateModel(RF, dataDev, 5, new Random(1));
                             long Amaiera = System.nanoTime();
                             long exDenb=Amaiera-Hasiera;
                             double Fmeasure = evaluator.fMeasure(minoritarioa);
+
+                            //Datuak gorde
                             datuak= new String[]{String.valueOf(PN), String.valueOf(BSP), String.valueOf(MD), String.valueOf(NT), String.valueOf(Fmeasure), String.valueOf(exDenb)};
                             for (int i = 0; i < datuak.length; i++) {
                                 writer.write(datuak[i]);
@@ -108,8 +121,9 @@ public class ParametroEkorketa {
                                 }
                             }
                             writer.newLine();
-                            loop++;
-                            System.out.println(loop);
+
+
+                            //Balio optimoak eguneratu
                             if(evaluator.fMeasure(minoritarioa)>optFMeasure){
                                 optFMeasure = evaluator.fMeasure(minoritarioa);
                                 PNopt = PN;
@@ -122,8 +136,6 @@ public class ParametroEkorketa {
                                 PNopt = PN;
                                 BSPopt = BSP;
                                 NTopt = NT;
-
-
                                 denbOpt=exDenb;
 
 
@@ -132,13 +144,6 @@ public class ParametroEkorketa {
                     }
                 }
             }
-
-
-
-
-
-
-
 
             datuak= new String[]{String.valueOf(PNopt), String.valueOf(BSPopt), String.valueOf(MDopt), String.valueOf(NTopt), String.valueOf(optFMeasure), String.valueOf(denbOpt)};
             for (int i = 0; i < datuak.length; i++) {
@@ -158,8 +163,9 @@ public class ParametroEkorketa {
             System.out.println("Exekuzio denbora: "+denbOpt);
 
 
-             */
 
+        /*
+        //-------------------------------- [UNO DE PRUEBA SIMPLE]----------------------------
         // Crear un clasificador RandomForest
         RandomForest forest = new RandomForest();
         forest.setNumExecutionSlots(Runtime.getRuntime().availableProcessors());
@@ -177,6 +183,8 @@ public class ParametroEkorketa {
         System.out.println("Kappa: " + eval.kappa());
         System.out.println("Confusion Matrix:\n" + eval.toMatrixString());
         System.out.println("Summary:\n" + eval.toSummaryString());
+
+         */
 
     }
 
