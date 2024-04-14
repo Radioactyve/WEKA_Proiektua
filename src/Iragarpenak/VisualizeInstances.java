@@ -1,12 +1,5 @@
 package Iragarpenak;
 
-
-
-
-
-
-
-
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.GridLayout;
@@ -31,19 +24,9 @@ import org.jfree.chart.JFreeChart;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
-
-
-
-
-
-
-
 public class VisualizeInstances {
     public VisualizeInstances() {
     }
-
-
-
 
     public static void main(String[] args) throws Exception {
         if (args.length != 2) {
@@ -54,24 +37,10 @@ public class VisualizeInstances {
             String csvParametroOpt = args[1];
             Map<String, String> ParametroOpt = new HashMap();
 
-
-
-
-
-
-
-
             FileReader reader;
             CSVParser parser;
             try {
                 reader = new FileReader(csvParametroOpt);
-
-
-
-
-
-
-
 
                 try {
                     parser = new CSVParser(reader, CSVFormat.DEFAULT.withFirstRecordAsHeader().withIgnoreHeaderCase().withTrim());
@@ -85,12 +54,6 @@ public class VisualizeInstances {
                     }
 
 
-
-
-
-
-
-
                     System.out.println("Parametro optimoak:");
                     System.out.println(ParametroOpt);
                     System.out.println();
@@ -100,49 +63,19 @@ public class VisualizeInstances {
                     } catch (Throwable var25) {
                         var26.addSuppressed(var25);
                     }
-
-
-
-
-
-
-
-
                     throw var26;
                 }
-
-
-
-
-
-
-
-
                 reader.close();
             } catch (IOException var27) {
                 System.out.println("Ez da dokumentua aurkitu");
                 var27.printStackTrace();
             }
 
-
-
-
-
-
-
-
             try {
                 reader = new FileReader(csvPath);
                 parser = CSVFormat.DEFAULT.withFirstRecordAsHeader().parse(reader);
                 Map<String, Integer> headers = parser.getHeaderMap();
                 Iterator var7 = headers.keySet().iterator();
-
-
-
-
-
-
-
 
                 while(var7.hasNext()) {
                     String header = (String)var7.next();
@@ -159,24 +92,8 @@ public class VisualizeInstances {
                                 } catch (Throwable var22) {
                                     var23.addSuppressed(var22);
                                 }
-
-
-
-
-
-
-
-
                                 throw var23;
                             }
-
-
-
-
-
-
-
-
                             fr.close();
                         } catch (IOException var24) {
                             var24.printStackTrace();
@@ -186,7 +103,6 @@ public class VisualizeInstances {
             } catch (IOException var28) {
                 var28.printStackTrace();
             }
-
 
             JFrame frame = new JFrame("Estatistikak");
             frame.setDefaultCloseOperation(3);
@@ -216,45 +132,17 @@ public class VisualizeInstances {
             frame.pack();
             frame.setLocationRelativeTo((Component) null);
             frame.setVisible(true);
-
-
         }
-
-
-
-
-
-
-
-
     }
-
-
-
-
-
-
-
-
     private static XYSeriesCollection createDataset(CSVParser records, String variableName, Map<String, String> ParametroOpt) {
         XYSeries series = new XYSeries("F-measure vs " + variableName);
         Iterator var4 = records.iterator();
         System.out.println(variableName);
 
-
-
-
         while(var4.hasNext()) {
             CSVRecord record = (CSVRecord)var4.next();
             boolean besteGuztiakOptimoak = true;
             Iterator var7 = record.toMap().keySet().iterator();
-
-
-
-
-
-
-
 
             while(var7.hasNext()) {
                 String columnName = (String)var7.next();
@@ -267,14 +155,6 @@ public class VisualizeInstances {
                     }
                 }
             }
-
-
-
-
-
-
-
-
             if (besteGuztiakOptimoak) {
                 double fMeasure = Double.parseDouble(record.get("F-measure"));
                 double variableValue = Double.parseDouble(record.get(variableName));
@@ -286,19 +166,8 @@ public class VisualizeInstances {
         dataset.addSeries(series);
         return dataset;
     }
-
-
-
-
-
-
-
-
     private static void createChart(XYSeriesCollection dataset, String variableName) {
         JFreeChart chart = ChartFactory.createScatterPlot("F-measure vs " + variableName, variableName, "F-measure", dataset);
-
-
-
 
         try {
             File grafikoa = new File("F_measure_vs_" + variableName + ".jpg");
@@ -306,28 +175,9 @@ public class VisualizeInstances {
                 grafikoa.delete();
             }
 
-
-
-
-
-
-
-
             ChartUtils.saveChartAsJPEG(new File("F-measure_vs_" + variableName + ".jpg"), chart, 800, 600);
         } catch (IOException var4) {
             var4.printStackTrace();
         }
-
-
-
-
-
-
-
-
     }
 }
-
-
-
-

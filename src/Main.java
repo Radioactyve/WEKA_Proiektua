@@ -156,7 +156,7 @@ public class Main {
     }
 
     private static void randomForestExec() throws Exception {
-        ParametroEkorketa.main(new String[]{FSS_TRAIN_ARFF_PATH, FSS_TRAIN_ARFF_PATH, RF_EKORKETA_DATUAK, RF_PARAMETRO_OPT},PN,BSP,MD,NT);
+        ParametroEkorketa.main(new String[]{FSS_TRAIN_ARFF_PATH, COMPATIBLE_DEV_ARFF_PATH, RF_EKORKETA_DATUAK, RF_PARAMETRO_OPT},PN,BSP,MD,NT);
     }
 
     private static void XGBoostExec() throws Exception {
