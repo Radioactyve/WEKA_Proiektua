@@ -1,10 +1,6 @@
-//
-// Source code recreated from a .class file by IntelliJ IDEA
-// (powered by FernFlower decompiler)
-//
-
-
 package Iragarpenak;
+
+
 
 
 import java.awt.BorderLayout;
@@ -32,24 +28,31 @@ import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
 
+
+
 public class VisualizeInstances {
     public VisualizeInstances() {
     }
 
+
     public static void main(String[] args) throws Exception {
-        if (args.length != 2) {
+        if (args.length != 3) {
             System.out.println("Txarto sartu dituzu argumentuak");
-            System.out.println("Argumentuak hauek era honetara izan behar dira: DatuenPath OptimoenPath ");
+            System.out.println("Argumentuak hauek era honetara izan behar dira: DatuenPath OptimoenPath RFedoXGB ");
         } else {
             String csvPath = args[0];
             String csvParametroOpt = args[1];
             Map<String, String> ParametroOpt = new HashMap();
 
 
+
+
             FileReader reader;
             CSVParser parser;
             try {
                 reader = new FileReader(csvParametroOpt);
+
+
 
 
                 try {
@@ -64,6 +67,8 @@ public class VisualizeInstances {
                     }
 
 
+
+
                     System.out.println("Parametro optimoak:");
                     System.out.println(ParametroOpt);
                     System.out.println();
@@ -75,8 +80,12 @@ public class VisualizeInstances {
                     }
 
 
+
+
                     throw var26;
                 }
+
+
 
 
                 reader.close();
@@ -86,6 +95,8 @@ public class VisualizeInstances {
             }
 
 
+
+
             try {
                 reader = new FileReader(csvPath);
                 parser = CSVFormat.DEFAULT.withFirstRecordAsHeader().parse(reader);
@@ -93,13 +104,13 @@ public class VisualizeInstances {
                 Iterator var7 = headers.keySet().iterator();
 
 
+
+
                 while(var7.hasNext()) {
                     String header = (String)var7.next();
                     if (!header.equals("F-measure") && !header.equals("Denbora")) {
                         try {
                             FileReader fr = new FileReader(csvPath);
-
-
                             try {
                                 CSVParser newParser = CSVFormat.DEFAULT.withFirstRecordAsHeader().parse(fr);
                                 XYSeriesCollection data = createDataset(newParser, header, ParametroOpt);
@@ -112,8 +123,12 @@ public class VisualizeInstances {
                                 }
 
 
+
+
                                 throw var23;
                             }
+
+
 
 
                             fr.close();
@@ -125,45 +140,101 @@ public class VisualizeInstances {
             } catch (IOException var28) {
                 var28.printStackTrace();
             }
+            String sailkatzaile=args[2];
 
 
-            JFrame frame = new JFrame("Estatistikak");
-            frame.setDefaultCloseOperation(3);
-            frame.setLayout(new BorderLayout());
-            JPanel panel = new JPanel(new GridLayout(2, 2, 10, 10));
-            ImageIcon image1 = new ImageIcon("F-measure_vs_BagSizePercentage.jpg");
-            Image scaledImage1 = image1.getImage().getScaledInstance(500, 375, 4);
-            ImageIcon scaledIcon1 = new ImageIcon(scaledImage1);
-            JLabel label1 = new JLabel(scaledIcon1);
-            panel.add(label1);
-            ImageIcon image2 = new ImageIcon("F-measure_vs_MaxDepth.jpg");
-            Image scaledImage2 = image2.getImage().getScaledInstance(500, 375, 4);
-            ImageIcon scaledIcon2 = new ImageIcon(scaledImage2);
-            JLabel label2 = new JLabel(scaledIcon2);
-            panel.add(label2);
-            ImageIcon image3 = new ImageIcon("F-measure_vs_NumTree.jpg");
-            Image scaledImage3 = image3.getImage().getScaledInstance(500, 375, 4);
-            ImageIcon scaledIcon3 = new ImageIcon(scaledImage3);
-            JLabel label3 = new JLabel(scaledIcon3);
-            panel.add(label3);
-            ImageIcon image4 = new ImageIcon("F-measure_vs_PNratio.jpg");
-            Image scaledImage4 = image4.getImage().getScaledInstance(500, 375, 4);
-            ImageIcon scaledIcon4 = new ImageIcon(scaledImage4);
-            JLabel label4 = new JLabel(scaledIcon4);
-            panel.add(label4);
-            frame.add(panel, "Center");
-            frame.pack();
-            frame.setLocationRelativeTo((Component)null);
-            frame.setVisible(true);
+            if(sailkatzaile.equals("RF")) {
+
+
+                JFrame frame = new JFrame("Estatistikak");
+                frame.setDefaultCloseOperation(3);
+                frame.setLayout(new BorderLayout());
+                JPanel panel = new JPanel(new GridLayout(2, 2, 10, 10));
+                ImageIcon image1 = new ImageIcon("F-measure_vs_BagSizePercentage.jpg");
+                Image scaledImage1 = image1.getImage().getScaledInstance(500, 375, 4);
+                ImageIcon scaledIcon1 = new ImageIcon(scaledImage1);
+                JLabel label1 = new JLabel(scaledIcon1);
+                panel.add(label1);
+                ImageIcon image2 = new ImageIcon("F-measure_vs_MaxDepth.jpg");
+                Image scaledImage2 = image2.getImage().getScaledInstance(500, 375, 4);
+                ImageIcon scaledIcon2 = new ImageIcon(scaledImage2);
+                JLabel label2 = new JLabel(scaledIcon2);
+                panel.add(label2);
+                ImageIcon image3 = new ImageIcon("F-measure_vs_NumTree.jpg");
+                Image scaledImage3 = image3.getImage().getScaledInstance(500, 375, 4);
+                ImageIcon scaledIcon3 = new ImageIcon(scaledImage3);
+                JLabel label3 = new JLabel(scaledIcon3);
+                panel.add(label3);
+                ImageIcon image4 = new ImageIcon("F-measure_vs_PNratio.jpg");
+                Image scaledImage4 = image4.getImage().getScaledInstance(500, 375, 4);
+                ImageIcon scaledIcon4 = new ImageIcon(scaledImage4);
+                JLabel label4 = new JLabel(scaledIcon4);
+                panel.add(label4);
+                frame.add(panel, "Center");
+                frame.pack();
+                frame.setLocationRelativeTo((Component) null);
+                frame.setVisible(true);
+
+
+            } else if (sailkatzaile.equals("XGB")) {
+                JFrame frame = new JFrame("Estatistikak");
+                frame.setDefaultCloseOperation(3);
+                frame.setLayout(new BorderLayout());
+                JPanel panel = new JPanel(new GridLayout(2, 4, 10, 10));
+                ImageIcon image1 = new ImageIcon("F-measure_vs_NumIterations.jpg");
+                Image scaledImage1 = image1.getImage().getScaledInstance(500, 375, 4);
+                ImageIcon scaledIcon1 = new ImageIcon(scaledImage1);
+                JLabel label1 = new JLabel(scaledIcon1);
+                panel.add(label1);
+
+
+                ImageIcon image2 = new ImageIcon("F-measure_vs_LearningRate.jpg");
+                Image scaledImage2 = image2.getImage().getScaledInstance(500, 375, 4);
+                ImageIcon scaledIcon2 = new ImageIcon(scaledImage2);
+                JLabel label2 = new JLabel(scaledIcon2);
+                panel.add(label2);
+
+
+                ImageIcon image3 = new ImageIcon("F-measure_vs_MaxDepth.jpg");
+                Image scaledImage3 = image3.getImage().getScaledInstance(500, 375, 4);
+                ImageIcon scaledIcon3 = new ImageIcon(scaledImage3);
+                JLabel label3 = new JLabel(scaledIcon3);
+                panel.add(label3);
+
+
+                ImageIcon image4 = new ImageIcon("F-measure_vs_SubSampleRows.jpg");
+                Image scaledImage4 = image4.getImage().getScaledInstance(500, 375, 4);
+                ImageIcon scaledIcon4 = new ImageIcon(scaledImage4);
+                JLabel label4 = new JLabel(scaledIcon4);
+                panel.add(label4);
+
+
+                ImageIcon image5 = new ImageIcon("F-measure_vs_SubSampleRows.jpg");
+                Image scaledImage5 = image5.getImage().getScaledInstance(500, 375, 4);
+                ImageIcon scaledIcon5 = new ImageIcon(scaledImage5);
+                JLabel label5 = new JLabel(scaledIcon5);
+                panel.add(label5);
+
+
+                frame.add(panel, "Center");
+                frame.pack();
+                frame.setLocationRelativeTo((Component) null);
+                frame.setVisible(true);
+            }
         }
+
+
 
 
     }
 
 
+
+
     private static XYSeriesCollection createDataset(CSVParser records, String variableName, Map<String, String> ParametroOpt) {
         XYSeries series = new XYSeries("F-measure vs " + variableName);
         Iterator var4 = records.iterator();
+        System.out.println(variableName);
 
 
         while(var4.hasNext()) {
@@ -172,11 +243,13 @@ public class VisualizeInstances {
             Iterator var7 = record.toMap().keySet().iterator();
 
 
+
+
             while(var7.hasNext()) {
                 String columnName = (String)var7.next();
                 if (!columnName.equals(variableName) && !columnName.equals("F-measure") && !columnName.equals("Denbora")) {
                     String value = record.get(columnName);
-                    System.out.println(value + (String)ParametroOpt.get(columnName));
+                    //System.out.println(value + (String)ParametroOpt.get(columnName));
                     if (!((String)ParametroOpt.get(columnName)).equals(value)) {
                         besteGuztiakOptimoak = false;
                         break;
@@ -185,18 +258,21 @@ public class VisualizeInstances {
             }
 
 
+
+
             if (besteGuztiakOptimoak) {
                 double fMeasure = Double.parseDouble(record.get("F-measure"));
                 double variableValue = Double.parseDouble(record.get(variableName));
+                System.out.println(variableValue);
                 series.add(variableValue, fMeasure);
             }
         }
-
-
         XYSeriesCollection dataset = new XYSeriesCollection();
         dataset.addSeries(series);
         return dataset;
     }
+
+
 
 
     private static void createChart(XYSeriesCollection dataset, String variableName) {
@@ -210,10 +286,14 @@ public class VisualizeInstances {
             }
 
 
+
+
             ChartUtils.saveChartAsJPEG(new File("F-measure_vs_" + variableName + ".jpg"), chart, 800, 600);
         } catch (IOException var4) {
             var4.printStackTrace();
         }
+
+
 
 
     }

@@ -1,11 +1,10 @@
 package Sailkatzailea;
 
 
+
+
 import ml.dmlc.xgboost4j.java.XGBoost;
 import ml.dmlc.xgboost4j.java.XGBoostError;
-import weka.classifiers.Evaluation;
-import weka.core.AttributeStats;
-import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.converters.ConverterUtils;
 
@@ -14,10 +13,8 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
 import ml.dmlc.xgboost4j.java.Booster;
 import ml.dmlc.xgboost4j.java.DMatrix;
-
 
 
 public class ParametroEkorketaXGB {
@@ -30,24 +27,28 @@ public class ParametroEkorketaXGB {
             //Datuak kargatu
             ConverterUtils.DataSource dataSource = new ConverterUtils.DataSource(args[0]);
             Instances data = dataSource.getDataSet();
-            data.setClassIndex(data.numAttributes() - 1);
+            data.setClassIndex(data.attribute("claseValue").index());
+
 
             ConverterUtils.DataSource devSource = new ConverterUtils.DataSource(args[1]);
             Instances dev = devSource.getDataSet();
-            dev.setClassIndex(data.numAttributes() - 1);
+            dev.setClassIndex(data.attribute("claseValue").index());
+
 
             DMatrix dataXGB = convertToDMatrix(data);
             DMatrix devXGB = convertToDMatrix(dev);
 
+
             //CSV fitxategia sortu eta hasierako infromazioa sartu
             BufferedWriter writer = new BufferedWriter(new FileWriter("EkorketaDatuakXGB.csv"));
-            String[] header = {"NumIterations", "LearningRate", "MaxDepth", "SubSample", "Apha", "Lambda", "F-measure", "Denbora"};
+            String[] header = {"NumIterations", "LearningRate", "MaxDepth", "SubSampleRows","SubSampleCols", "Apha", "Lambda", "F-measure", "Denbora"};
             for (int i = 0; i < header.length; i++) {
                 writer.write(header[i]);
                 if (i < header.length - 1) {
                     writer.write(",");
                 }
             }
+
 
             //Parametroak sortu eta hasieratu 0 ra
             double optFScore = 0.0;
@@ -60,10 +61,16 @@ public class ParametroEkorketaXGB {
             double Lopt = 0;
 
 
+
+
             long denbOpt = 0;
 
 
+
+
             String[] datuak = {};
+
+
 
 
             // NumIterations
@@ -90,11 +97,13 @@ public class ParametroEkorketaXGB {
                                         long Hasiera = System.nanoTime();
                                         Booster booster = XGBoost.train(dataXGB, parametroak, NI, null, null, null);
 
+
                                         float[][] predictions = booster.predict(devXGB);
                                         int prediction=0;
                                         int tp=0;
                                         int fp=0;
                                         int fn=0;
+
 
                                         for (int i = 0; i < predictions.length; i++) {
                                             if (predictions[i][0] > 0.5 ){
@@ -109,6 +118,7 @@ public class ParametroEkorketaXGB {
                                                 fn++;
                                             }
 
+
                                         }
                                         //precision
                                         double precision = (double) tp / (tp + fp);
@@ -117,10 +127,12 @@ public class ParametroEkorketaXGB {
                                         //FScore
                                         double FScore = 2 * (precision * recall) / (precision + recall);
 
+
                                         long Amaiera = System.nanoTime();
                                         long exDenb=Amaiera-Hasiera;
 
-                                        datuak = new String[]{String.valueOf(NI), String.valueOf(LR), String.valueOf(MD), String.valueOf(SR), String.valueOf(SC),String.valueOf(SR), String.valueOf(A), String.valueOf(L), String.valueOf(FScore), String.valueOf(exDenb)};
+
+                                        datuak = new String[]{String.valueOf(NI), String.valueOf(LR), String.valueOf(MD), String.valueOf(SR), String.valueOf(SC), String.valueOf(A), String.valueOf(L), String.valueOf(FScore), String.valueOf(exDenb)};
                                         for (int i = 0; i < datuak.length; i++) {
                                             writer.write(datuak[i]);
                                             if (i < datuak.length - 1) {
@@ -166,12 +178,14 @@ public class ParametroEkorketaXGB {
         float[] dataFloats = new float[numInstances * numAttributes];
         float[] labels = new float[numInstances];
 
+
         for (int i = 0; i < numInstances; i++) {
             for (int j = 0; j < numAttributes; j++) {
                 dataFloats[i * numAttributes + j] = (float)data.instance(i).value(j);
             }
             labels[i] = (float)data.instance(i).classValue();
         }
+
 
         DMatrix dMatrix = new DMatrix(dataFloats, numInstances, numAttributes);
         dMatrix.setLabel(labels);

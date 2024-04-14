@@ -7,9 +7,17 @@ import java.util.Scanner;
 
 public class Main {
     // ------------------------------ [PATHS] --------------------------------------
+
+    //---GET RAW DATA---
+    private static String PATH_IN = "src/x_in/";
+    private static String PATH_OUT = "src/x_out/Data/";
+    private static String MODIFIED_PATH = "/modified_";
+    private static String FINAL_PATH = "/final_";
+    private static String EMOJI_LIST = "src/x_in/emoji.txt";
     private static String TRAIN_ARFF_PATH = "src/x_out/Data/train/train.arff";
     private static String DEV_ARFF_PATH = "src/x_out/Data/dev/dev.arff";
     private static String TEST_ARFF_PATH = "src/x_out/Data/test/test.arff";
+
     private static String ANALISIS_TRAIN_TXT_PATH = "src/x_out/Data/train/analisis.txt";
     private static String ANALISIS_DEV_TXT_PATH = "src/x_out/Data/dev/analisis.txt";
     private static String NEW_TRAIN_ARFF_PATH = "src/x_out/Data/train/new_train.arff";
@@ -28,6 +36,7 @@ public class Main {
 
 
     // ------------------------------ [SETTINGS] --------------------------------------
+    private static boolean READ_CSV_EMOJIS = true;
     private static int HOLD_OUT_PERCENTAGE = 70;
     private static int FSS_WORDS_TO_KEEP = 2000;
     private static String IRAGARPEN_MODELOA = "RF";
@@ -93,8 +102,8 @@ public class Main {
 
 
     private static void prestatuData() throws Exception {
-        Data.GetRawData.GetRawData("train", TRAIN_ARFF_PATH);
-        Data.GetRawData.GetRawData("dev", DEV_ARFF_PATH);
+        Data.GetRawData.GetRawData("train", TRAIN_ARFF_PATH,PATH_IN,PATH_OUT,MODIFIED_PATH,FINAL_PATH,EMOJI_LIST,READ_CSV_EMOJIS);
+        Data.GetRawData.GetRawData("dev", DEV_ARFF_PATH,PATH_IN,PATH_OUT,MODIFIED_PATH,FINAL_PATH,EMOJI_LIST,READ_CSV_EMOJIS);
 
         AnalizeData.main(TRAIN_ARFF_PATH, ANALISIS_TRAIN_TXT_PATH);
         AnalizeData.main(DEV_ARFF_PATH, ANALISIS_DEV_TXT_PATH);
@@ -118,8 +127,6 @@ public class Main {
     }
 
     private static void XGBoostExec() throws Exception {
-
-
         ParametroEkorketaXGB.main(new String[]{FSS_TRAIN_ARFF_PATH, COMPATIBLE_DEV_ARFF_PATH});
         Iragarpenak.main(RANDOMFOREST_MODEL_PATH,"RF",TEST_ARFF_PATH,IRAGARPENAK_PATH);
     }
@@ -219,6 +226,7 @@ public class Main {
             System.out.println("2. IRAGARPEN_MODELOA: " + IRAGARPEN_MODELOA);
             System.out.println("3. FSS_WORDS_TO_KEEP: " + FSS_WORDS_TO_KEEP);
             System.out.println("4. RF PARAMETROAK ALDATU");
+            System.out.println("5. READ_CSV_EMOJIS: " + READ_CSV_EMOJIS);
             System.out.println("10. Irten");
 
             int aukera = scanner.nextInt();
@@ -264,6 +272,9 @@ public class Main {
                                 break;
                         }
                     }
+                    break;
+                case 5:
+                    READ_CSV_EMOJIS = Boolean.parseBoolean(aukeraAldatu("READ_CSV_EMOJIS",  scanner));
                     break;
                 case 10:
                     System.out.println("Menu nagusira bueltatzen...");

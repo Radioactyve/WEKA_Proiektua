@@ -9,18 +9,28 @@ import java.util.regex.*;
 
 public class GetRawData {
 
-    private static String pathIn = "src/x_in/";
-    private static String pathOut = "src/x_out/Data/";
-    private static String modified = "/modified_";
-    private static String finala = "/final_";
-    private static String emojiList = "src/x_in/emoji.txt";
+    private static String pathIn;
+    private static String pathOut;
+    private static String modified;
+    private static String finala;
+    private static String emojiList;
+    private static boolean readEmoji;
 
-    public static void GetRawData(String csvName, String arffPath) {
+    public static void GetRawData(String csvName, String arffPath, String ppathIn, String ppathOut, String pmodified, String pfinala, String pemojiList, boolean preadEmoji) {
         /**
          * Metodo honek bi String motako parametro hartzen ditu, lehenengoa csv-aren path-a eta bigarrena arff baten path-a
          * Metodoak adierazitako csv-an dauden datuak hartzen ditu eta hauekin arff bat sortzen du (jada existitzen ez bada) eta
          * csv-an dauden datuak arff moduan idazten ditu
          * */
+
+        //set params
+        pathIn = ppathIn;
+        pathOut = ppathOut;
+        modified = pmodified;
+        finala = pfinala;
+        emojiList = pemojiList;
+        readEmoji = preadEmoji;
+
 
         List<String> emojis = new ArrayList<>();
 
@@ -98,7 +108,15 @@ public class GetRawData {
                     Pattern pattern = Pattern.compile(regexPattern);
                     Matcher matcher = pattern.matcher(modifiedLine);
                     // Reemplazar todos los emojis encontrados en la línea
-                    modifiedLine = matcher.replaceAll(emoji.replace(" ", "_"));
+
+                    if (readEmoji){
+                        modifiedLine = matcher.replaceAll(emoji.replace(" ", "_"));
+                    }
+                    else{
+                        modifiedLine = matcher.replaceAll("");
+                    }
+
+
                 }
                 // Escribir la línea modificada al archivo de salida
                 bw.write(modifiedLine);
