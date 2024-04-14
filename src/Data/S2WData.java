@@ -4,6 +4,7 @@ import weka.core.Instances;
 import weka.core.converters.ConverterUtils.DataSource;
 import weka.core.tokenizers.WordTokenizer;
 import weka.filters.Filter;
+import weka.filters.unsupervised.attribute.Remove;
 import weka.filters.unsupervised.attribute.StringToWordVector;
 import weka.filters.unsupervised.instance.SparseToNonSparse;
 
@@ -47,16 +48,14 @@ public class S2WData {
         filter.setTokenizer(tokenizer);
 
         filter.setInputFormat(data);
-
         Instances train = Filter.useFilter(data, filter);
 
-        //Sparsetik Non Sparsera bihurtu
+        // Sparsetik Non Sparsera bihurtu
         SparseToNonSparse nonSparse = new SparseToNonSparse();
         nonSparse.setInputFormat(train);
-
         Instances dataNonSparse = Filter.useFilter(train, nonSparse);
 
-        //Gorde .arff -a
+        // Gorde .arff -a
         FileWriter fwTrain = new FileWriter(BoWTrainArff);
         fwTrain.write(dataNonSparse.toString());
         fwTrain.close();

@@ -53,10 +53,10 @@ public class GetRawData {
         ) {
             // ARFF-aren goiburua idatzi
             pw.println("@relation IberLef-Challenge");
-            pw.println("@attribute 'idValue' string");
+            //pw.println("@attribute 'idValue' string");
             pw.println("@attribute 'claseValue' {0,1}");
             pw.println("@attribute 'textValue' string");
-            pw.println("@attribute 'dateValue' date 'yyyy-MM-dd HH:mm:ss'");
+            //pw.println("@attribute 'dateValue' date 'yyyy-MM-dd HH:mm:ss'");
             pw.println("@data");
 
             String line;
@@ -74,7 +74,8 @@ public class GetRawData {
                 */
 
                 //ARFF-an idatziko den formatuan idatzi ilara osoa
-                String processedLine = values.get(0) + "," + values.get(1) + ",\"" + values.get(2) + "\",\"" + values.get(3) + "\"";
+                //String processedLine = values.get(0) + "," + values.get(1) + ",\"" + values.get(2) + "\",\"" + values.get(3) + "\"";
+                String processedLine = values.get(1) + ",\"" + values.get(2) + "\"";
                 pw.println(processedLine);
             }
         }

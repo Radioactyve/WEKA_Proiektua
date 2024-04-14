@@ -1,23 +1,4 @@
-corazón azul
-corazón amarillo
-corazón creciente
-corazón blanco
-corazón negro
-corazón morado
-corazón brillante
-corazón curándose
-corazón naranja
-corazón marrón
-corazón latiendo
-corazón verde
-corazón roto
-corazón humano
-corazón gris
-corazón en llamas
-corazón rojo
-adorno de corazón
-exclamación de corazón
-corazón con flecha
+cara sonriendo
 cara sonriendo con ojos grandes
 cara sonriendo con ojos sonrientes
 cara radiante con ojos sonrientes
@@ -525,3 +506,23 @@ familia: mujer, hombre, niña
 familia: mujer, hombre, niña, niño
 familia: mujer, hombre, niña, niña
 familia: mujer, mujer, niño, niña
+corazón azul
+corazón amarillo
+corazón creciente
+corazón blanco
+corazón negro
+corazón morado
+corazón brillante
+corazón curándose
+corazón naranja
+corazón marrón
+corazón latiendo
+corazón verde
+corazón roto
+corazón humano
+corazón gris
+corazón en llamas
+corazón rojo
+adorno de corazón
+exclamación de corazón
+corazón con flecha

@@ -3,6 +3,10 @@ package Iragarpenak;
 
 
 
+
+
+
+
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.GridLayout;
@@ -30,15 +34,21 @@ import org.jfree.data.xy.XYSeriesCollection;
 
 
 
+
+
+
+
 public class VisualizeInstances {
     public VisualizeInstances() {
     }
 
 
+
+
     public static void main(String[] args) throws Exception {
-        if (args.length != 3) {
+        if (args.length != 2) {
             System.out.println("Txarto sartu dituzu argumentuak");
-            System.out.println("Argumentuak hauek era honetara izan behar dira: DatuenPath OptimoenPath RFedoXGB ");
+            System.out.println("Argumentuak hauek era honetara izan behar dira: DatuenPath OptimoenPath ");
         } else {
             String csvPath = args[0];
             String csvParametroOpt = args[1];
@@ -47,10 +57,18 @@ public class VisualizeInstances {
 
 
 
+
+
+
+
             FileReader reader;
             CSVParser parser;
             try {
                 reader = new FileReader(csvParametroOpt);
+
+
+
+
 
 
 
@@ -69,6 +87,10 @@ public class VisualizeInstances {
 
 
 
+
+
+
+
                     System.out.println("Parametro optimoak:");
                     System.out.println(ParametroOpt);
                     System.out.println();
@@ -82,8 +104,16 @@ public class VisualizeInstances {
 
 
 
+
+
+
+
                     throw var26;
                 }
+
+
+
+
 
 
 
@@ -97,11 +127,19 @@ public class VisualizeInstances {
 
 
 
+
+
+
+
             try {
                 reader = new FileReader(csvPath);
                 parser = CSVFormat.DEFAULT.withFirstRecordAsHeader().parse(reader);
                 Map<String, Integer> headers = parser.getHeaderMap();
                 Iterator var7 = headers.keySet().iterator();
+
+
+
+
 
 
 
@@ -125,8 +163,16 @@ public class VisualizeInstances {
 
 
 
+
+
+
+
                                 throw var23;
                             }
+
+
+
+
 
 
 
@@ -140,93 +186,52 @@ public class VisualizeInstances {
             } catch (IOException var28) {
                 var28.printStackTrace();
             }
-            String sailkatzaile=args[2];
 
 
-            if(sailkatzaile.equals("RF")) {
+            JFrame frame = new JFrame("Estatistikak");
+            frame.setDefaultCloseOperation(3);
+            frame.setLayout(new BorderLayout());
+            JPanel panel = new JPanel(new GridLayout(2, 2, 10, 10));
+            ImageIcon image1 = new ImageIcon("F-measure_vs_BagSizePercentage.jpg");
+            Image scaledImage1 = image1.getImage().getScaledInstance(500, 375, 4);
+            ImageIcon scaledIcon1 = new ImageIcon(scaledImage1);
+            JLabel label1 = new JLabel(scaledIcon1);
+            panel.add(label1);
+            ImageIcon image2 = new ImageIcon("F-measure_vs_MaxDepth.jpg");
+            Image scaledImage2 = image2.getImage().getScaledInstance(500, 375, 4);
+            ImageIcon scaledIcon2 = new ImageIcon(scaledImage2);
+            JLabel label2 = new JLabel(scaledIcon2);
+            panel.add(label2);
+            ImageIcon image3 = new ImageIcon("F-measure_vs_NumTree.jpg");
+            Image scaledImage3 = image3.getImage().getScaledInstance(500, 375, 4);
+            ImageIcon scaledIcon3 = new ImageIcon(scaledImage3);
+            JLabel label3 = new JLabel(scaledIcon3);
+            panel.add(label3);
+            ImageIcon image4 = new ImageIcon("F-measure_vs_PNratio.jpg");
+            Image scaledImage4 = image4.getImage().getScaledInstance(500, 375, 4);
+            ImageIcon scaledIcon4 = new ImageIcon(scaledImage4);
+            JLabel label4 = new JLabel(scaledIcon4);
+            panel.add(label4);
+            frame.add(panel, "Center");
+            frame.pack();
+            frame.setLocationRelativeTo((Component) null);
+            frame.setVisible(true);
 
 
-                JFrame frame = new JFrame("Estatistikak");
-                frame.setDefaultCloseOperation(3);
-                frame.setLayout(new BorderLayout());
-                JPanel panel = new JPanel(new GridLayout(2, 2, 10, 10));
-                ImageIcon image1 = new ImageIcon("F-measure_vs_BagSizePercentage.jpg");
-                Image scaledImage1 = image1.getImage().getScaledInstance(500, 375, 4);
-                ImageIcon scaledIcon1 = new ImageIcon(scaledImage1);
-                JLabel label1 = new JLabel(scaledIcon1);
-                panel.add(label1);
-                ImageIcon image2 = new ImageIcon("F-measure_vs_MaxDepth.jpg");
-                Image scaledImage2 = image2.getImage().getScaledInstance(500, 375, 4);
-                ImageIcon scaledIcon2 = new ImageIcon(scaledImage2);
-                JLabel label2 = new JLabel(scaledIcon2);
-                panel.add(label2);
-                ImageIcon image3 = new ImageIcon("F-measure_vs_NumTree.jpg");
-                Image scaledImage3 = image3.getImage().getScaledInstance(500, 375, 4);
-                ImageIcon scaledIcon3 = new ImageIcon(scaledImage3);
-                JLabel label3 = new JLabel(scaledIcon3);
-                panel.add(label3);
-                ImageIcon image4 = new ImageIcon("F-measure_vs_PNratio.jpg");
-                Image scaledImage4 = image4.getImage().getScaledInstance(500, 375, 4);
-                ImageIcon scaledIcon4 = new ImageIcon(scaledImage4);
-                JLabel label4 = new JLabel(scaledIcon4);
-                panel.add(label4);
-                frame.add(panel, "Center");
-                frame.pack();
-                frame.setLocationRelativeTo((Component) null);
-                frame.setVisible(true);
-
-
-            } else if (sailkatzaile.equals("XGB")) {
-                JFrame frame = new JFrame("Estatistikak");
-                frame.setDefaultCloseOperation(3);
-                frame.setLayout(new BorderLayout());
-                JPanel panel = new JPanel(new GridLayout(2, 4, 10, 10));
-                ImageIcon image1 = new ImageIcon("F-measure_vs_NumIterations.jpg");
-                Image scaledImage1 = image1.getImage().getScaledInstance(500, 375, 4);
-                ImageIcon scaledIcon1 = new ImageIcon(scaledImage1);
-                JLabel label1 = new JLabel(scaledIcon1);
-                panel.add(label1);
-
-
-                ImageIcon image2 = new ImageIcon("F-measure_vs_LearningRate.jpg");
-                Image scaledImage2 = image2.getImage().getScaledInstance(500, 375, 4);
-                ImageIcon scaledIcon2 = new ImageIcon(scaledImage2);
-                JLabel label2 = new JLabel(scaledIcon2);
-                panel.add(label2);
-
-
-                ImageIcon image3 = new ImageIcon("F-measure_vs_MaxDepth.jpg");
-                Image scaledImage3 = image3.getImage().getScaledInstance(500, 375, 4);
-                ImageIcon scaledIcon3 = new ImageIcon(scaledImage3);
-                JLabel label3 = new JLabel(scaledIcon3);
-                panel.add(label3);
-
-
-                ImageIcon image4 = new ImageIcon("F-measure_vs_SubSampleRows.jpg");
-                Image scaledImage4 = image4.getImage().getScaledInstance(500, 375, 4);
-                ImageIcon scaledIcon4 = new ImageIcon(scaledImage4);
-                JLabel label4 = new JLabel(scaledIcon4);
-                panel.add(label4);
-
-
-                ImageIcon image5 = new ImageIcon("F-measure_vs_SubSampleRows.jpg");
-                Image scaledImage5 = image5.getImage().getScaledInstance(500, 375, 4);
-                ImageIcon scaledIcon5 = new ImageIcon(scaledImage5);
-                JLabel label5 = new JLabel(scaledIcon5);
-                panel.add(label5);
-
-
-                frame.add(panel, "Center");
-                frame.pack();
-                frame.setLocationRelativeTo((Component) null);
-                frame.setVisible(true);
-            }
         }
 
 
 
 
+
+
+
+
     }
+
+
+
+
 
 
 
@@ -237,10 +242,16 @@ public class VisualizeInstances {
         System.out.println(variableName);
 
 
+
+
         while(var4.hasNext()) {
             CSVRecord record = (CSVRecord)var4.next();
             boolean besteGuztiakOptimoak = true;
             Iterator var7 = record.toMap().keySet().iterator();
+
+
+
+
 
 
 
@@ -260,6 +271,10 @@ public class VisualizeInstances {
 
 
 
+
+
+
+
             if (besteGuztiakOptimoak) {
                 double fMeasure = Double.parseDouble(record.get("F-measure"));
                 double variableValue = Double.parseDouble(record.get(variableName));
@@ -275,8 +290,14 @@ public class VisualizeInstances {
 
 
 
+
+
+
+
     private static void createChart(XYSeriesCollection dataset, String variableName) {
-        JFreeChart chart = ChartFactory.createXYLineChart("F-measure vs " + variableName, variableName, "F-measure", dataset);
+        JFreeChart chart = ChartFactory.createScatterPlot("F-measure vs " + variableName, variableName, "F-measure", dataset);
+
+
 
 
         try {
@@ -284,6 +305,10 @@ public class VisualizeInstances {
             if (grafikoa.exists()) {
                 grafikoa.delete();
             }
+
+
+
+
 
 
 
@@ -296,5 +321,13 @@ public class VisualizeInstances {
 
 
 
+
+
+
+
     }
 }
+
+
+
+

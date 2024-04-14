@@ -27,10 +27,10 @@ public class Iragarpenak {
         RandomForest RF = new RandomForest();
         //XGBoost
 
-        if (modeloMota == "J48"){
+        if (modeloMota.equals("J48")){
             j48 = (J48) SerializationHelper.read(new FileInputStream(modelPath));
         }
-        else if (modeloMota == "RF"){
+        else if (modeloMota.equals("RF")){
             RF = (RandomForest) SerializationHelper.read(new FileInputStream(modelPath));
         }
         /*
@@ -44,10 +44,10 @@ public class Iragarpenak {
             for (int i = 0; i < data.numInstances(); i++) {
                 Instance instance = data.instance(i);
                 double label =0;
-                if (modeloMota == "J48"){
+                if (modeloMota.equals("J48")){
                     label = j48.classifyInstance(instance);
                 }
-                if (modeloMota == "RF"){
+                if (modeloMota.equals("RF")){
                     label = RF.classifyInstance(instance);
                 }
                 /*

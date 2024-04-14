@@ -2,8 +2,18 @@ import Data.AnalizeData;
 import Iragarpenak.Iragarpenak;
 import Sailkatzailea.ParametroEkorketa;
 import Sailkatzailea.ParametroEkorketaXGB;
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVParser;
+import org.apache.commons.csv.CSVRecord;
+import weka.classifiers.trees.J48;
+import weka.classifiers.trees.RandomForest;
+import weka.core.Instances;
+import weka.core.SerializationHelper;
+import weka.core.converters.ConverterUtils;
 
-import java.util.Scanner;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.*;
 
 public class Main {
     // ------------------------------ [PATHS] --------------------------------------
@@ -14,23 +24,42 @@ public class Main {
     private static String MODIFIED_PATH = "/modified_";
     private static String FINAL_PATH = "/final_";
     private static String EMOJI_LIST = "src/x_in/emoji.txt";
-    private static String TRAIN_ARFF_PATH = "src/x_out/Data/train/train.arff";
-    private static String DEV_ARFF_PATH = "src/x_out/Data/dev/dev.arff";
-    private static String TEST_ARFF_PATH = "src/x_out/Data/test/test.arff";
 
+    //---ANALISIS---
     private static String ANALISIS_TRAIN_TXT_PATH = "src/x_out/Data/train/analisis.txt";
     private static String ANALISIS_DEV_TXT_PATH = "src/x_out/Data/dev/analisis.txt";
+
+    //---TRAIN---
+    private static String TRAIN_ARFF_PATH = "src/x_out/Data/train/train.arff";
     private static String NEW_TRAIN_ARFF_PATH = "src/x_out/Data/train/new_train.arff";
-    private static String NEW_DEV_ARFF_PATH = "src/x_out/Data/dev/new_dev.arff";
-    private static String COMBINED_ARFF_PATH = "src/x_out/Data/combined.arff";
     private static String BOW_TRAIN_ARFF_PATH = "src/x_out/Data/train/BoW_train.arff";
     private static String FSS_TRAIN_ARFF_PATH = "src/x_out/Data/train/FSS_train.arff";
-    private static String DICTIONARY_TXT_PATH = "src/x_out/Data/dictionary.txt";
+
+    //---DEV---
+    private static String DEV_ARFF_PATH = "src/x_out/Data/dev/dev.arff";
+    private static String NEW_DEV_ARFF_PATH = "src/x_out/Data/dev/new_dev.arff";
     private static String COMPATIBLE_DEV_ARFF_PATH = "src/x_out/Data/dev/compatible_dev.arff";
+
+    //---TEST---
+    private static String TEST_ARFF_PATH = "src/x_out/Data/test/test.arff";
     private static String COMPATIBLE_TEST_PATH = "src/x_out/Data/test/compatible_test.arff";
+
+    //---COMBINED---
+    private static String COMBINED_ARFF_PATH = "src/x_out/Data/combined.arff";
+    private static String BOW_COMBINED_ARFF_PATH = "src/x_out/Data/BoW_combined.arff";
+    private static String FSS_COMBINED_ARFF_PATH = "src/x_out/Data/FSS_combined.arff";
+
+
+    //---MODELS---
     private static String J48_MODEL_PATH = "src/x_out/Sailkatzailea/j48.model";
     private static String RANDOMFOREST_MODEL_PATH = "src/x_out/Sailkatzailea/rf.model";
+    private static String RF_EKORKETA_DATUAK = "src/x_out/Sailkatzailea/EkorketaDatuakRF.csv";
+    private static String RF_PARAMETRO_OPT = "src/x_out/Sailkatzailea/RF_parametroOpt.csv";
     private static String XGBOOST_MODEL_PATH = "src/x_out/Sailkatzailea/boost.model";
+
+
+    //---EXTRAS---
+    private static String DICTIONARY_TXT_PATH = "src/x_out/Data/dictionary.txt";
     private static String IRAGARPENAK_PATH = "src/x_out/Iragarpenak/iragarpenakBaseLine.txt";
 
 
@@ -50,7 +79,6 @@ public class Main {
 
 
 
-
     // ------------------------------ [MAIN] --------------------------------------
     public static void main(String[] args) throws Exception {
         Scanner scanner = new Scanner(System.in);
@@ -58,11 +86,11 @@ public class Main {
         while (true) {
             // Menú de opciones
             System.out.println("MENU NAGUSIA:");
-            System.out.println("1. Default full exec");
-            System.out.println("2. Baseline");
-            System.out.println("3. RandomForest");
-            System.out.println("4. XGBoost");
-            System.out.println("5. Iragarpenak");
+            System.out.println("1. Modeloa eraiki");
+            System.out.println("2. Baseline kalitatea");
+            System.out.println("3. RandomForest ekorketa + kalitatea");
+            System.out.println("4. XGBoost ekorketa");
+            System.out.println("5. Iragarpenak egin");
             System.out.println("7. Fitxategien kokapena aldatu");
             System.out.println("8. Programen exekuzio aukerak aldatu");
             System.out.println("9. Irten");
@@ -71,7 +99,7 @@ public class Main {
 
             switch (aukera) {
                 case 1:
-                    //fullExec();
+                    modeloaEraiki();
                     break;
                 case 2:
                     prestatuData();
@@ -80,6 +108,13 @@ public class Main {
                 case 3:
                     prestatuData();
                     randomForestExec();
+                    break;
+                case 4:
+                    prestatuData();
+                    XGBoostExec();
+                    break;
+                case 5:
+                    iragarpenakEgin();
                     break;
                 case 7:
                     fitxategiKokapenAldaketa();
@@ -117,33 +152,143 @@ public class Main {
     }
 
     private static void baselineExec() throws Exception {
-        Sailkatzailea.J48BaseLine.main(FSS_TRAIN_ARFF_PATH);
-        Iragarpenak.main(J48_MODEL_PATH,"j48",TEST_ARFF_PATH,IRAGARPENAK_PATH);
+        Sailkatzailea.J48BaseLine.main(FSS_TRAIN_ARFF_PATH,COMPATIBLE_DEV_ARFF_PATH);
     }
 
     private static void randomForestExec() throws Exception {
-        ParametroEkorketa.main(new String[]{FSS_TRAIN_ARFF_PATH, COMPATIBLE_DEV_ARFF_PATH},PN,BSP,MD,NT);
-        Iragarpenak.main(RANDOMFOREST_MODEL_PATH,"RF",TEST_ARFF_PATH,IRAGARPENAK_PATH);
+        ParametroEkorketa.main(new String[]{FSS_TRAIN_ARFF_PATH, FSS_TRAIN_ARFF_PATH, RF_EKORKETA_DATUAK, RF_PARAMETRO_OPT},PN,BSP,MD,NT);
     }
 
     private static void XGBoostExec() throws Exception {
         ParametroEkorketaXGB.main(new String[]{FSS_TRAIN_ARFF_PATH, COMPATIBLE_DEV_ARFF_PATH});
-        Iragarpenak.main(RANDOMFOREST_MODEL_PATH,"RF",TEST_ARFF_PATH,IRAGARPENAK_PATH);
+    }
+
+    private static void modeloaEraiki() throws Exception {
+        //DATA PRESTATU
+        Data.GetRawData.GetRawData("train", TRAIN_ARFF_PATH,PATH_IN,PATH_OUT,MODIFIED_PATH,FINAL_PATH,EMOJI_LIST,READ_CSV_EMOJIS);
+        Data.GetRawData.GetRawData("dev", DEV_ARFF_PATH,PATH_IN,PATH_OUT,MODIFIED_PATH,FINAL_PATH,EMOJI_LIST,READ_CSV_EMOJIS);
+        Data.NewStratifiedHoldOut.NewStratifiedHoldOut(HOLD_OUT_PERCENTAGE, TRAIN_ARFF_PATH, NEW_TRAIN_ARFF_PATH,  DEV_ARFF_PATH, NEW_DEV_ARFF_PATH, COMBINED_ARFF_PATH);
+
+        Data.S2WData.S2WData(COMBINED_ARFF_PATH, BOW_COMBINED_ARFF_PATH);
+        Data.FSS.FSS(BOW_COMBINED_ARFF_PATH, FSS_COMBINED_ARFF_PATH, DICTIONARY_TXT_PATH,FSS_WORDS_TO_KEEP);
+
+        Data.MakeCompatible.MakeCompatible(TEST_ARFF_PATH, COMPATIBLE_TEST_PATH, DICTIONARY_TXT_PATH);
+
+        //Datuak kargatu
+        ConverterUtils.DataSource dataSource = new ConverterUtils.DataSource(FSS_COMBINED_ARFF_PATH);
+        Instances data = dataSource.getDataSet();
+        if (data.classIndex() == -1) {
+            data.setClassIndex(data.attribute("claseValue").index());
+        }
+
+        // MODELO EZBERDINAK
+        if (IRAGARPEN_MODELOA.equals("RF")){
+
+            //CSV-ko parametro optimoak irakurri
+            FileReader reader;
+            CSVParser parser;
+            Map<String, String> ParametroOpt = new HashMap();
+
+            try {
+                reader = new FileReader(RF_PARAMETRO_OPT);
+                try {
+                    parser = new CSVParser(reader, CSVFormat.DEFAULT.withFirstRecordAsHeader().withIgnoreHeaderCase().withTrim());
+                    CSVRecord firstRecord = (CSVRecord)parser.getRecords().stream().findFirst().orElse((CSVRecord) null);
+                    if (firstRecord != null) {
+                        Map<String, String> var10000 = firstRecord.toMap();
+                        Objects.requireNonNull(ParametroOpt);
+                        var10000.forEach(ParametroOpt::put);
+                    } else {
+                        System.out.println("Ez daude parametro optimoak.");
+                    }
+
+                    System.out.println("Parametro optimoak:");
+                    System.out.println(ParametroOpt);
+                    System.out.println();
+                } catch (Throwable var26) {
+                    try {
+                        reader.close();
+                    } catch (Throwable var25) {
+                        var26.addSuppressed(var25);
+                    }
+
+                    throw var26;
+                }
+
+                reader.close();
+            } catch (IOException var27) {
+                System.out.println("Ez da dokumentua aurkitu");
+                var27.printStackTrace();
+            }
+
+
+
+            //balioak esleitu
+            RandomForest RandomForest = new RandomForest();
+
+            if (PN){
+                RandomForest.setNumFeatures(Integer.parseInt(ParametroOpt.get("PNratio")));
+            }
+            if (BSP){
+                RandomForest.setBagSizePercent(Integer.parseInt(ParametroOpt.get("BagSizePercentage")));
+            }
+            if (MD){
+                RandomForest.setMaxDepth(Integer.parseInt(ParametroOpt.get("MaxDepth")));
+            }
+            if (NT){
+                RandomForest.setNumIterations(Integer.parseInt(ParametroOpt.get("NumTree")));
+            }
+            System.out.println("Parametro hauekin RandomForest-a eraikitzen:");
+            System.out.println("PNratio" + ParametroOpt.get("PNratio"));
+            System.out.println("BagSizePercentage" + ParametroOpt.get("BagSizePercentage"));
+            System.out.println("MaxDepth" + ParametroOpt.get("MaxDepth"));
+            System.out.println("NumTree" + ParametroOpt.get("NumTree"));
+
+            //Modeloa sortu
+            RandomForest.buildClassifier(data);
+            //Modeloa gorde
+            SerializationHelper.write(RANDOMFOREST_MODEL_PATH, RandomForest);
+            System.out.println("RandomForest modeloa eraiki da hurrengo path-ean:" + RANDOMFOREST_MODEL_PATH);
+        }
+        else if (IRAGARPEN_MODELOA.equals("XGBoost")){
+            //create XGBoost
+            //iragarpenak XGBoost (es otro programa aparte)
+        }
+        else if (IRAGARPEN_MODELOA.equals("J48")){
+            J48 j48 = new J48();
+            String[] options = new String[1];
+            options[0] = "-U"; // aaaa soy +
+            j48.setOptions(options);
+            j48.buildClassifier(data);
+            System.out.println("J48 modeloa eraiki da hurrengo path-ean:" + J48_MODEL_PATH);
+            //Modeloa gorde
+            SerializationHelper.write(J48_MODEL_PATH, j48);
+        }
+    }
+
+    private static void iragarpenakEgin() throws Exception {
+        System.out.println("Iragarpenak egiten...");
+
+        if (IRAGARPEN_MODELOA.equals("RF")){
+            System.out.println(RANDOMFOREST_MODEL_PATH + " erabiliz iragarpenak egiten...");
+            Iragarpenak.main(RANDOMFOREST_MODEL_PATH,IRAGARPEN_MODELOA,COMPATIBLE_TEST_PATH,IRAGARPENAK_PATH);
+        }
+        else if (IRAGARPEN_MODELOA.equals("XGBoost")){
+            //create XGBoost
+            //iragarpenak XGBoost (es otro programa aparte)
+        }
+        else if (IRAGARPEN_MODELOA.equals("J48")){
+            System.out.println(J48_MODEL_PATH + " erabiliz iragarpenak egiten...");
+            Iragarpenak.main(J48_MODEL_PATH,IRAGARPEN_MODELOA,COMPATIBLE_TEST_PATH,IRAGARPENAK_PATH);
+        }
+
+        System.out.println("Emaitzak lortu dira, iragarpenak hurrengo fitxategian gorde dira:" + IRAGARPENAK_PATH);
     }
 
 
-    /*
-    private static void fullExec() throws Exception {
-        Sailkatzailea.J48BaseLine.main(FSS_TRAIN_ARFF_PATH);
-
-        ParametroEkorketa.main(new String[]{TRAIN_ARFF_PATH, DEV_ARFF_PATH});
-        //Prueba.main(new String[]{});
-        //J48BaseLine.main(FSS_TRAIN_ARFF_PATH);
-        //Iragarpenak.main();
-    }
-    */
 
 
+    // ----------------------- PARAM ALDAKETAK -----------------------------
     private static void fitxategiKokapenAldaketa() {
         Boolean exitMenu = false;
         while (!exitMenu){
@@ -236,6 +381,7 @@ public class Main {
                     HOLD_OUT_PERCENTAGE = Integer.parseInt(aukeraAldatu("HOLD_OUT_PERCENTAGE",  scanner));
                     break;
                 case 2:
+                    System.out.println("Aukera posibleak: RF, J48, XGBoost");
                     IRAGARPEN_MODELOA = aukeraAldatu("IRAGARPEN_MODELOA",  scanner);
                     break;
                 case 3:
@@ -287,14 +433,11 @@ public class Main {
     }
 
     private static String aukeraAldatu(String settingIzena, Scanner scanner) {
-        System.out.println("Introduce el nuevo valor para " + settingIzena + ": ");
+        System.out.println(settingIzena + "-ren balio sakatu: ");
         String newValue = scanner.next();
         System.out.println(settingIzena + " -ren balioa hurrengoa da orain: " + newValue );
 
         return newValue;
     }
-
-
-
 
 }

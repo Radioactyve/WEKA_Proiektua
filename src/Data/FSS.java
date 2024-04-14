@@ -38,6 +38,7 @@ public class FSS {
             data.setClassIndex(data.attribute("claseValue").index());
         }
 
+        /*
         StringToNominal convert = new StringToNominal();
         String[] options = new String[2];
         options[0] = "-R"; // "range"
@@ -46,6 +47,7 @@ public class FSS {
         convert.setInputFormat(data);
 
         Instances newData = Filter.useFilter(data, convert);
+        */
 
         Ranker ranker = new Ranker();
         //ranker.setThreshold(0.1);
@@ -54,8 +56,8 @@ public class FSS {
         AttributeSelection filter = new AttributeSelection();
         filter.setEvaluator(new InfoGainAttributeEval());
         filter.setSearch(ranker);
-        filter.setInputFormat(newData);
-        Instances dataFiltered = Filter.useFilter(newData, filter);
+        filter.setInputFormat(data);
+        Instances dataFiltered = Filter.useFilter(data, filter);
 
         //Gorde .arff -a
         FileWriter fwTrain = new FileWriter(fssTrainArff);

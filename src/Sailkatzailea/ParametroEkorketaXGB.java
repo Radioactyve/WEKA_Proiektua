@@ -1,13 +1,10 @@
 package Sailkatzailea;
 
 
-
-
 import ml.dmlc.xgboost4j.java.XGBoost;
 import ml.dmlc.xgboost4j.java.XGBoostError;
 import weka.core.Instances;
 import weka.core.converters.ConverterUtils;
-
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -32,7 +29,7 @@ public class ParametroEkorketaXGB {
 
             ConverterUtils.DataSource devSource = new ConverterUtils.DataSource(args[1]);
             Instances dev = devSource.getDataSet();
-            dev.setClassIndex(data.attribute("claseValue").index());
+            dev.setClassIndex(dev.attribute("claseValue").index());
 
 
             DMatrix dataXGB = convertToDMatrix(data);
