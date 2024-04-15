@@ -85,13 +85,13 @@ public class ParametroEkorketa {
             erroAtributuPN = 1;
         }
         if (!useBSP) {
-            maxBSP = 1;
+            maxBSP = 2;
         }
         if (!useMD) {
-            erroAtributuMD = 1;
+            erroAtributuMD = 2;
         }
         if (!useNT) {
-            maxNT = 1;
+            maxNT = 51;
         }
 
 

@@ -1,5 +1,0 @@
-
-Instantzia kopurua: 6248
-Atributu kopurua: 2
-Maiztasun txikien duen klasearen identifikatzailea: 1
-Klase atributuko missing value kopurua: 0
