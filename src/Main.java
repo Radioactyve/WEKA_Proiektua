@@ -82,7 +82,7 @@ public class Main {
     // ------------------------------ [SETTINGS] --------------------------------------
     private static boolean READ_CSV_EMOJIS = true;
     private static int HOLD_OUT_PERCENTAGE = 70;
-    private static int FSS_WORDS_TO_KEEP = 2000;
+    private static int FSS_WORDS_TO_KEEP = 5000;
     private static String IRAGARPEN_MODELOA = "RF";
     private static String ANALIZATUTAKO_DATUAK = "train";
 

@@ -96,13 +96,13 @@ public class ParametroEkorketa {
 
 
         //PN ratio
-        for (int PN = 0; PN < erroAtributuPN; PN += 10) { //atributuen erroa bainon txikiagorarte
+        for (int PN = 0; PN < erroAtributuPN; PN += 1) { //atributuen erroa bainon txikiagorarte
             //BagSizePercentage
             for (int BSP = 1; BSP < maxBSP; BSP += 4) {//Gure kasuan datu askorekin lan egingo dugunez, portzentai txiki bat erabiliko dugu. 4%-ko saltoak
                 //maxDepth
                 for (int MD = 1; MD < erroAtributuMD; MD += 10) {
                     //numTree
-                    for (int NT = 50; NT < maxNT; NT += 25) {
+                    for (int NT = 50; NT < maxNT; NT += 5) {
                         //loop count
                         loop++;
                         System.out.println(loop);
@@ -126,7 +126,7 @@ public class ParametroEkorketa {
                         evaluator.crossValidateModel(RF, dataDev, 5, new Random(1));
                         long Amaiera = System.nanoTime();
                         long exDenb = Amaiera - Hasiera;
-                        double Fmeasure = evaluator.fMeasure(minoritarioa);
+                        double Fmeasure = evaluator.recall(minoritarioa);
 
                         //Datuak gorde
                         datuak = new String[]{String.valueOf(PN), String.valueOf(BSP), String.valueOf(MD), String.valueOf(NT), String.valueOf(Fmeasure), String.valueOf(exDenb)};
@@ -140,15 +140,15 @@ public class ParametroEkorketa {
                         writer.newLine();
 
                         //Balio optimoak eguneratu
-                        if (evaluator.fMeasure(minoritarioa) > optFMeasure) {
-                            optFMeasure = evaluator.fMeasure(minoritarioa);
+                        if (evaluator.recall(minoritarioa) > optFMeasure) {
+                            optFMeasure = evaluator.recall(minoritarioa);
                             PNopt = PN;
                             BSPopt = BSP;
                             MDopt = MD;
                             NTopt = NT;
                             denbOpt = exDenb;
-                        } else if (evaluator.fMeasure(minoritarioa) == optFMeasure && exDenb < denbOpt) {
-                            optFMeasure = evaluator.fMeasure(minoritarioa);
+                        } else if (evaluator.recall(minoritarioa) == optFMeasure && exDenb < denbOpt) {
+                            optFMeasure = evaluator.recall(minoritarioa);
                             PNopt = PN;
                             BSPopt = BSP;
                             MDopt = MD;

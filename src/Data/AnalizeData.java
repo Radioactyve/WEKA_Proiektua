@@ -1,6 +1,7 @@
 package Data;
 
 import weka.core.Attribute;
+import weka.core.AttributeStats;
 import weka.core.Instances;
 import weka.core.converters.ConverterUtils.DataSource;
 
@@ -21,37 +22,27 @@ public class AnalizeData {
 
             fw.write("\nInstantzia kopurua: " + data.numInstances());
             fw.write("\nAtributu kopurua: " + data.numAttributes());
-            fw.write("\nMaiztasun txikien duen klasearen identifikatzailea: " + getMinFrequencyClass(data));
             fw.write("\nKlase atributuko missing value kopurua: " + countMissingValues(data,data.attribute(textAttributename).index()));
+
+            //Klase minoritarioa kalkulatu
+            AttributeStats attrStats = data.attributeStats(data.attribute("claseValue").index());
+            int minoritarioa = -1;
+            double KlaseMinoMaiz = Integer.MAX_VALUE;
+            for (int i = 0; i < data.numClasses(); i++) {
+                fw.write("\n balioa: " + data.attribute(data.attribute("claseValue").index()).value(i) + "; maiztasuna: " + attrStats.nominalCounts[i]);
+                if (KlaseMinoMaiz > attrStats.nominalCounts[i]) {
+                    minoritarioa = i;
+                    KlaseMinoMaiz = attrStats.nominalCounts[i];
+                }
+            }
+            System.out.println(minoritarioa);
+
 
             fw.close();
 
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    private static String getMinFrequencyClass(Instances data) {
-        Attribute classAttribute = data.classAttribute();
-        HashMap<String, Integer> classFrequencyMap = new HashMap<>();
-
-        for (int i = 0; i < data.numInstances(); i++) {
-            String classValue = data.instance(i).stringValue(classAttribute);
-            classFrequencyMap.put(classValue, classFrequencyMap.getOrDefault(classValue, 0) + 1);
-        }
-
-        String minFrequencyClass = null;
-        int minFrequency = Integer.MAX_VALUE;
-
-        for (String value : classFrequencyMap.keySet()) {
-            int frequency = classFrequencyMap.get(value);
-            if (frequency < minFrequency) {
-                minFrequency = frequency;
-                minFrequencyClass = value;
-            }
-        }
-
-        return minFrequencyClass;
     }
 
 
