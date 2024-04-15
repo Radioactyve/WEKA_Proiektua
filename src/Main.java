@@ -501,16 +501,16 @@ public class Main {
 
                         switch (aukeraRF) {
                             case 1:
-                                PN = Boolean.parseBoolean(aukeraAldatu("PN", scanner));
+                                PN = !PN;
                                 break;
                             case 2:
-                                BSP = Boolean.parseBoolean(aukeraAldatu("BSP", scanner));
+                                BSP = !BSP;
                                 break;
                             case 3:
-                                MD = Boolean.parseBoolean(aukeraAldatu("MD", scanner));
+                                MD = !MD;
                                 break;
                             case 4:
-                                NT = Boolean.parseBoolean(aukeraAldatu("NT", scanner));
+                                NT = !NT;
                                 break;
                             case 0:
                                 System.out.println("Menu nagusira bueltatzen...");
