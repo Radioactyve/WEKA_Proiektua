@@ -51,5 +51,8 @@ public class MakeCompatible {
         FileWriter fwTrain = new FileWriter(output);
         fwTrain.write(dataNonSparse.toString());
         fwTrain.close();
+
+        System.out.println("\nOrain fitxategia train-ekin konpatiblea da. Fitxategia: " + output);
+        System.out.println("Erabili den hiztegia: " + dictionaryTxt + "\n");
     }
 }

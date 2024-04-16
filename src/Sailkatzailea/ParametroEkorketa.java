@@ -20,6 +20,8 @@ import java.util.Random;
 
 public class ParametroEkorketa {
     public static void main(String[] args, Boolean usePN, Boolean useBSP, Boolean useMD, Boolean useNT) throws Exception {
+        long start = System.nanoTime();
+
         //Datuak kargatu
         DataSource dataSource = new DataSource(args[0]);
         Instances data = dataSource.getDataSet();
@@ -67,7 +69,8 @@ public class ParametroEkorketa {
         }
         System.out.println(minoritarioa);
 
-        //Parametroak sortu eta hasieratu 0 ra
+        //Parametroak sortu eta hasieratu 0 raa
+        Evaluation evalOpt = null;
         double optFMeasure = 0.0;
         int PNopt = 0;
         int BSPopt = 0;
@@ -110,7 +113,9 @@ public class ParametroEkorketa {
                     for (int NT = 10; NT < maxNT; NT += 1) {
                         //loop count
                         loop++;
-                        System.out.println(loop);
+                        if (loop%25==0 || loop==1){
+                            System.out.println("Loop zenbakia: " + loop);
+                        }
 
                         //parametroak zehaztu
                         if (usePN) {
@@ -144,13 +149,9 @@ public class ParametroEkorketa {
                         writer.flush();
                         writer.newLine();
 
-                        System.out.println("Correct= " + evaluator.pctCorrect());
-                        System.out.println(evaluator.fMeasure(1));
-                        System.out.println("ClassDetail= " + evaluator.toClassDetailsString());
-                        System.out.println("SummaryString= " + evaluator.toSummaryString());
-
                         //Balio optimoak eguneratu
                         if (evaluator.fMeasure(1) > optFMeasure) {
+                            evalOpt = evaluator;
                             optFMeasure = evaluator.fMeasure(1);
                             PNopt = PN;
                             BSPopt = BSP;
@@ -158,6 +159,7 @@ public class ParametroEkorketa {
                             NTopt = NT;
                             denbOpt = exDenb;
                         } else if (evaluator.fMeasure(1) == optFMeasure && exDenb < denbOpt) {
+                            evalOpt = evaluator;
                             optFMeasure = evaluator.fMeasure(1);
                             PNopt = PN;
                             BSPopt = BSP;
@@ -178,15 +180,30 @@ public class ParametroEkorketa {
             }
         }
         writer1.close();
-        System.out.println("Parametro optimoak hauek dira:");
-        System.out.println("P/Nratio: " + PNopt);
-        System.out.println("BagSizePercentage: " + BSPopt);
-        System.out.println("MaxDepth: " + MDopt);
-        System.out.println("NumTree: " + NTopt);
+        System.out.println("\nParametro optimoak hauek dira:");
+        if (usePN) {
+            System.out.println("P/Nratio: " + PNopt);
+        }
+        if (useBSP) {
+            System.out.println("BagSizePercentage: " + BSPopt);
+        }
+        if (useMD) {
+            System.out.println("MaxDepth: " + MDopt);
+        }
+        if (useNT) {
+            System.out.println("NumTree: " + NTopt);
+        }
         System.out.println();
         System.out.println("Eta hauek dira emaitzak:");
         System.out.println("F-measure: " + optFMeasure);
-        System.out.println("Exekuzio denbora: " + denbOpt);
+        System.out.println(evalOpt.toSummaryString());
+        System.out.println(evalOpt.toClassDetailsString());
+        System.out.println(evalOpt.toMatrixString());
+
+        long end = System.nanoTime();
+        long time = end - start;
+        double duration = time / 1_000_000_000.0;
+        System.out.println("Parametro ekorketaren exekuzio denbora: " + duration + " seg");
     }
 }
 

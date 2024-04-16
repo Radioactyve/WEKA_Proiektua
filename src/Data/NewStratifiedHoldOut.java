@@ -75,10 +75,10 @@ public class NewStratifiedHoldOut {
             // Cerrar el archivo de salida
             writer.close();
 
-            System.out.println("Ondo juntatu dira ARFF-ak.");
+            System.out.println("\nOndo juntatu dira ARFF-ak.");
         } catch (IOException e) {
             e.printStackTrace();
-            System.out.println("Errore bat egon da datuak juntatzerakoan.");
+            System.out.println("\nErrore bat egon da datuak juntatzerakoan.");
         }
     }
 
@@ -122,6 +122,10 @@ public class NewStratifiedHoldOut {
         FileWriter fwDev = new FileWriter(newDevArff);
         fwDev.write(devData.toString());
         fwDev.close();
+
+        System.out.println("\nTrain eta Dev berriak sortu egin dira.");
+        System.out.println("New train fitxategia: " + newTrainArff);
+        System.out.println("New dev fitxategia: " + newDevArff);
 
     }
 }

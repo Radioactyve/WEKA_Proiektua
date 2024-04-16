@@ -68,5 +68,8 @@ public class FSS {
             }
         }
         fw.close();
+
+        System.out.println("\nFeatureSubsetSelection filtroa aplikatu da era egokian. Fitxategia: " + fssTrainArff);
+        System.out.println("Dictionary fitxategia: " + dictionaryTxt);
     }
 }

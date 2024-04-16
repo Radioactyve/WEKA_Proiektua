@@ -43,15 +43,14 @@ public class GetRawData {
 
         String modifiedPath = pathOut + csvName + modified + csvName + ".csv";
         emojiModify(csvName, emojis, modifiedPath);
-        System.out.println("Emojiak hitz bakar bat bezala gorde dira " + csvName + "-an");
 
         String modifiedPath2 = pathOut + csvName + modified + csvName + "2.csv";
         groupInstancesByID(modifiedPath,modifiedPath2);
-        System.out.println("ID-z batu dira instantziak " + csvName + "-an");
+        System.out.println("ID-z batu dira instantziak " + csvName + "-an.");
 
         String finalPath = pathOut + csvName + finala + csvName + ".csv";
         csvFinal(modifiedPath2, finalPath);
-        System.out.println("Komilla doble errepikatuak ordezkatu egin dira " + csvName + "-an");
+        System.out.println("Komilla doble errepikatuak ordezkatu egin dira " + csvName + "-an. Fitxategia: " + finalPath);
 
         try (
                 BufferedReader br = new BufferedReader(new FileReader(finalPath));
@@ -76,6 +75,8 @@ public class GetRawData {
         catch (IOException e) {
             e.printStackTrace();
         }
+
+        System.out.println(csvName + ".arff-a sortu egin da. Fitxategia: " + arffPath);
 
         //Ezabatu pausuak emateko egin diren artxibo lagungarriak partial, modified
         File modified = new File(modifiedPath);
@@ -164,6 +165,7 @@ public class GetRawData {
 
                     if (readEmoji){
                         modifiedLine = matcher.replaceAll(emoji.replace(" ", "_"));
+
                     }
                     else{
                         modifiedLine = matcher.replaceAll("");
@@ -175,6 +177,12 @@ public class GetRawData {
             }
         } catch (IOException e) {
             e.printStackTrace();
+        }
+        if (readEmoji){
+            System.out.println("\nEmojiak hitz bakar bat bezala gorde dira.");
+        }
+        else{
+            System.out.println("\nEmojiak ezabatu egin dira.");
         }
     }
 

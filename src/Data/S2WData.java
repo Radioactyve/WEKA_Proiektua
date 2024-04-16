@@ -64,5 +64,7 @@ public class S2WData {
         FileWriter fwTrain = new FileWriter(BoWTrainArff);
         fwTrain.write(dataNonSparse.toString());
         fwTrain.close();
+
+        System.out.println("\nS2W filtroa era egokian aplikatu da. Fitxategia: " +  BoWTrainArff);
     }
 }

@@ -13,6 +13,8 @@ public class AnalizeData {
         /**
          * Datuen hainbat informazio gordetzen du, hala nola, instantza kopurua, atributu kopurua...
          */
+        System.out.println("\nDatuen analisia burutzen...");
+
         try {
             // --- DataSource ---
             DataSource source = new DataSource(arffToAnalize);
@@ -36,14 +38,14 @@ public class AnalizeData {
                     KlaseMinoMaiz = attrStats.nominalCounts[i];
                 }
             }
-            System.out.println(minoritarioa);
-
 
             fw.close();
 
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        System.out.println("Datuen analisia amitu egin du. Fitxategia: " + AnalisisTxt);
     }
 
     private static int countMissingValues(Instances data, int attributeIndex) {
