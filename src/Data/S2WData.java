@@ -4,7 +4,6 @@ import weka.core.Instances;
 import weka.core.converters.ConverterUtils.DataSource;
 import weka.core.tokenizers.WordTokenizer;
 import weka.filters.Filter;
-import weka.filters.unsupervised.attribute.Remove;
 import weka.filters.unsupervised.attribute.StringToWordVector;
 import weka.filters.unsupervised.instance.SparseToNonSparse;
 
@@ -16,6 +15,9 @@ public class S2WData {
     private static String BoWTrainArff;
 
     public static void S2WData (String newTrainArffIn, String BoWTrainArffIn){
+        /**
+         * StringToWordFiltroa aplikatu datuei
+         */
         try {
             newTrainArff = newTrainArffIn;
             BoWTrainArff = BoWTrainArffIn;
@@ -27,6 +29,9 @@ public class S2WData {
     }
 
     private static void s2w() throws Exception {
+        /**
+         * StringToWordFiltroa aplikatu datuei
+         */
         // Kargatu entrenamendu datuak
         DataSource trainSource = new DataSource(newTrainArff);
         Instances data = trainSource.getDataSet();

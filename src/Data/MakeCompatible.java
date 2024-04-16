@@ -11,6 +11,9 @@ import java.io.*;
 public class MakeCompatible {
     private static String dictionaryTxt;
     public static void MakeCompatible(String path, String output, String dictionaryTxtIn){
+        /**
+         * Sartutako .arff-a train-ekin konpatiblea izateko eraldaketa burutu
+         */
         try{
             dictionaryTxt = dictionaryTxtIn;
             compatible(path, output);
@@ -21,16 +24,19 @@ public class MakeCompatible {
     }
 
     public static void compatible(String path, String output) throws Exception {
-        // Carga el conjunto de datos original
+        /**
+         * Sartutako .arff-a train-ekin konpatiblea izateko eraldaketa burutu
+         */
+        // Kargatu jatorrizko datu-multzoa
         DataSource source = new DataSource(path);
         Instances data = source.getDataSet();
 
-        // Asegura que el atributo de clase está correctamente establecido
+        // Klase-atributua behar bezala ezarrita dagoela ziurtatzen du
         if (data.classIndex() == -1) {
-            data.setClassIndex(data.numAttributes() - 1); // Normalmente el último atributo
+            data.setClassIndex(data.attribute("claseValue").index());
         }
 
-        // Configura y aplica StringToWordVector al conjunto de datos original, replicando la configuración usada para headers.arff
+        // StringToWordVector konfiguratu eta aplikatzen dio jatorrizko datu-multzoari, train.arff sistemarako erabilitako konfigurazioa erreplikatuz.
         FixedDictionaryStringToWordVector fixedFilter = new FixedDictionaryStringToWordVector();
         fixedFilter.setDictionaryFile(new File(dictionaryTxt));
         fixedFilter.setInputFormat(data);
@@ -41,7 +47,7 @@ public class MakeCompatible {
         nonSparse.setInputFormat(filteredData);
         Instances dataNonSparse = Filter.useFilter(filteredData, nonSparse);
 
-        // Guarda el nuevo conjunto de datos ajustado
+        // Gorde arff konpatiblea
         FileWriter fwTrain = new FileWriter(output);
         fwTrain.write(dataNonSparse.toString());
         fwTrain.close();

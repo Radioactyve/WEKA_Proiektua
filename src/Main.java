@@ -20,7 +20,6 @@ import java.util.*;
 public class Main {
     // ------------------------------ [PATHS] --------------------------------------
 
-
     //---GET RAW DATA---
     private static String PATH_IN = "src/x_in/";
     private static String PATH_OUT = "src/x_out/Data/";
@@ -58,8 +57,6 @@ public class Main {
     private static String FSS_COMBINED_ARFF_PATH = "src/x_out/Data/FSS_combined.arff";
 
 
-
-
     //---MODELS---
     private static String J48_MODEL_PATH = "src/x_out/Sailkatzailea/j48.model";
     private static String RANDOMFOREST_MODEL_PATH = "src/x_out/Sailkatzailea/rf.model";
@@ -68,15 +65,9 @@ public class Main {
     private static String XGBOOST_MODEL_PATH = "src/x_out/Sailkatzailea/boost.model";
 
 
-
-
     //---EXTRAS---
     private static String DICTIONARY_TXT_PATH = "src/x_out/Data/dictionary.txt";
     private static String IRAGARPENAK_PATH = "src/x_out/Iragarpenak/iragarpenakBaseLine.txt";
-
-
-
-
 
 
     // ------------------------------ [SETTINGS] --------------------------------------
@@ -84,7 +75,7 @@ public class Main {
     private static int HOLD_OUT_PERCENTAGE = 80;
     private static int FSS_WORDS_TO_KEEP = 2000;
     private static String IRAGARPEN_MODELOA = "RF";
-    private static String ANALIZATUTAKO_DATUAK = "train";
+    private static String ANALIZATUTAKO_DATUAK = "RAW Train"; //RAW Train, RAW Dev, RAW Test, RAW Combined, NEW Train, NEW Dev, BOW Train, FSS Train, Compatible Dev
 
 
     // ---- (RF PARAMETERS) ----S
@@ -93,37 +84,27 @@ public class Main {
     private static Boolean MD = false;
     private static Boolean NT = true;
 
-
-
-
-
-
-
-
-
-
     // ------------------------------ [MAIN] --------------------------------------
     public static void main(String[] args) throws Exception {
         Scanner scanner = new Scanner(System.in);
-
-
         while (true) {
             // Menú de opciones
-            System.out.println("MENU NAGUSIA:");
-            System.out.println("1. Modeloa eraiki");
+            System.out.println("--------------MENU NAGUSIA-----------------");
+            System.out.println("PROGRAMAK");
+            System.out.println("1. Modeloa eraiki (" + IRAGARPEN_MODELOA + ")" );
             System.out.println("2. Baseline kalitatea");
             System.out.println("3. RandomForest ekorketa + kalitatea");
-            System.out.println("4. XGBoost ekorketa");
-            System.out.println("5. Iragarpenak egin");
-            System.out.println("6. Datuak analizatu");
+            System.out.println("4. XGBoost ekorketa ");
+            System.out.println("5. Iragarpenak egin (" + IRAGARPEN_MODELOA + ") erabiliz");
+            System.out.println("6. (" + ANALIZATUTAKO_DATUAK + ") analizatu");
+
+            System.out.println("\nSETTINGS");
             System.out.println("7. Fitxategien kokapena aldatu");
             System.out.println("8. Programen exekuzio aukerak aldatu");
-            System.out.println("0. Irten");
 
+            System.out.println("\n0. IRTEN");
 
             int aukera = scanner.nextInt();
-
-
             switch (aukera) {
                 case 1:
                     modeloaEraiki();
@@ -146,15 +127,13 @@ public class Main {
                 case 6:
                     analizeData();
                     break;
-
-
                 case 7:
                     fitxategiKokapenAldaketa();
                     break;
                 case 8:
                     settingsAldaketa();
                     break;
-                case 9:
+                case 0:
                     System.out.println("Irtetzen...");
                     return;
                 default:
@@ -164,41 +143,25 @@ public class Main {
     }
 
 
-
-
-
-
     // ------------------------------ [METODOAK] --------------------------------------
-
-
-
-
     private static void prestatuData() throws Exception {
         //Data.newCSV();
-
         Data.GetRawData.GetRawData("train", TRAIN_ARFF_PATH,PATH_IN,PATH_OUT,MODIFIED_PATH,FINAL_PATH,EMOJI_LIST,READ_CSV_EMOJIS);
         Data.GetRawData.GetRawData("dev", DEV_ARFF_PATH,PATH_IN,PATH_OUT,MODIFIED_PATH,FINAL_PATH,EMOJI_LIST,READ_CSV_EMOJIS);
-
 
         AnalizeData.main(TRAIN_ARFF_PATH, ANALISIS_TRAIN_TXT_PATH);
         AnalizeData.main(DEV_ARFF_PATH, ANALISIS_DEV_TXT_PATH);
 
-
         Data.NewStratifiedHoldOut.NewStratifiedHoldOut(HOLD_OUT_PERCENTAGE, TRAIN_ARFF_PATH, NEW_TRAIN_ARFF_PATH,  DEV_ARFF_PATH, NEW_DEV_ARFF_PATH, COMBINED_ARFF_PATH);
-
 
         Data.S2WData.S2WData(NEW_TRAIN_ARFF_PATH, BOW_TRAIN_ARFF_PATH);
         Data.FSS.FSS(BOW_TRAIN_ARFF_PATH, FSS_TRAIN_ARFF_PATH, DICTIONARY_TXT_PATH,FSS_WORDS_TO_KEEP);
 
-
         Data.MakeCompatible.MakeCompatible(NEW_DEV_ARFF_PATH, COMPATIBLE_DEV_ARFF_PATH, DICTIONARY_TXT_PATH);
     }
 
-
     private static void analizeData() throws Exception {
         System.out.println(ANALIZATUTAKO_DATUAK + " aztertzen...");
-
-
         if (ANALIZATUTAKO_DATUAK.equals("dev")){
             Data.AnalizeData.main(DEV_ARFF_PATH,ANALISIS_DEV_TXT_PATH);
             System.out.println("Analisia hurrengo fitxategian gorde da:" + ANALISIS_DEV_TXT_PATH);
@@ -207,29 +170,20 @@ public class Main {
             Data.AnalizeData.main(TRAIN_ARFF_PATH,ANALISIS_TRAIN_TXT_PATH);
             System.out.println("Analisia hurrengo fitxategian gorde da:" + ANALISIS_TRAIN_TXT_PATH);
         }
-
-
-
-
-
-
     }
-
 
     private static void baselineExec() throws Exception {
         Sailkatzailea.J48BaseLine.main(FSS_TRAIN_ARFF_PATH,COMPATIBLE_DEV_ARFF_PATH);
     }
 
-
     private static void randomForestExec() throws Exception {
         ParametroEkorketa.main(new String[]{FSS_TRAIN_ARFF_PATH, COMPATIBLE_DEV_ARFF_PATH, RF_EKORKETA_DATUAK, RF_PARAMETRO_OPT},PN,BSP,MD,NT);
     }
 
-
     private static void XGBoostExec() throws Exception {
-        ParametroEkorketaXGB.main(new String[]{FSS_TRAIN_ARFF_PATH, COMPATIBLE_DEV_ARFF_PATH});
+        //ParametroEkorketaXGB.main(new String[]{FSS_TRAIN_ARFF_PATH, COMPATIBLE_DEV_ARFF_PATH});
+        System.out.println("Funtzio hau ez dago erabilgarria momentu honetan");
     }
-
 
     private static void modeloaEraiki() throws Exception {
         //DATA PRESTATU
@@ -237,13 +191,11 @@ public class Main {
         Data.GetRawData.GetRawData("dev", DEV_ARFF_PATH,PATH_IN,PATH_OUT,MODIFIED_PATH,FINAL_PATH,EMOJI_LIST,READ_CSV_EMOJIS);
         Data.NewStratifiedHoldOut.NewStratifiedHoldOut(HOLD_OUT_PERCENTAGE, TRAIN_ARFF_PATH, NEW_TRAIN_ARFF_PATH,  DEV_ARFF_PATH, NEW_DEV_ARFF_PATH, COMBINED_ARFF_PATH);
 
-
         Data.S2WData.S2WData(COMBINED_ARFF_PATH, BOW_COMBINED_ARFF_PATH);
         Data.FSS.FSS(BOW_COMBINED_ARFF_PATH, FSS_COMBINED_ARFF_PATH, DICTIONARY_TXT_PATH,FSS_WORDS_TO_KEEP);
 
-
+        Data.GetRawData.GetRawData("test", TEST_ARFF_PATH,PATH_IN,PATH_OUT,MODIFIED_PATH,FINAL_PATH,EMOJI_LIST,READ_CSV_EMOJIS);
         Data.MakeCompatible.MakeCompatible(TEST_ARFF_PATH, COMPATIBLE_TEST_PATH, DICTIONARY_TXT_PATH);
-
 
         //Datuak kargatu
         ConverterUtils.DataSource dataSource = new ConverterUtils.DataSource(FSS_COMBINED_ARFF_PATH);
@@ -252,16 +204,12 @@ public class Main {
             data.setClassIndex(data.attribute("claseValue").index());
         }
 
-
         // MODELO EZBERDINAK
         if (IRAGARPEN_MODELOA.equals("RF")){
-
-
             //CSV-ko parametro optimoak irakurri
             FileReader reader;
             CSVParser parser;
             Map<String, String> ParametroOpt = new HashMap();
-
 
             try {
                 reader = new FileReader(RF_PARAMETRO_OPT);
@@ -276,7 +224,6 @@ public class Main {
                         System.out.println("Ez daude parametro optimoak.");
                     }
 
-
                     System.out.println("Parametro optimoak:");
                     System.out.println(ParametroOpt);
                     System.out.println();
@@ -286,12 +233,8 @@ public class Main {
                     } catch (Throwable var25) {
                         var26.addSuppressed(var25);
                     }
-
-
                     throw var26;
                 }
-
-
                 reader.close();
             } catch (IOException var27) {
                 System.out.println("Ez da dokumentua aurkitu");
@@ -299,13 +242,8 @@ public class Main {
             }
 
 
-
-
-
-
             //balioak esleitu
             RandomForest RandomForest = new RandomForest();
-
 
             if (PN){
                 RandomForest.setNumFeatures(Integer.parseInt(ParametroOpt.get("PNratio")));
@@ -324,7 +262,6 @@ public class Main {
             System.out.println("BagSizePercentage" + ParametroOpt.get("BagSizePercentage"));
             System.out.println("MaxDepth" + ParametroOpt.get("MaxDepth"));
             System.out.println("NumTree" + ParametroOpt.get("NumTree"));
-
 
             //Modeloa sortu
             RandomForest.buildClassifier(data);
@@ -348,10 +285,8 @@ public class Main {
         }
     }
 
-
     private static void iragarpenakEgin() throws Exception {
         System.out.println("Iragarpenak egiten...");
-
 
         if (IRAGARPEN_MODELOA.equals("RF")){
             System.out.println(RANDOMFOREST_MODEL_PATH + " erabiliz iragarpenak egiten...");
@@ -365,16 +300,8 @@ public class Main {
             System.out.println(J48_MODEL_PATH + " erabiliz iragarpenak egiten...");
             Iragarpenak.main(J48_MODEL_PATH,IRAGARPEN_MODELOA,COMPATIBLE_TEST_PATH,IRAGARPENAK_PATH);
         }
-
-
         System.out.println("Emaitzak lortu dira, iragarpenak hurrengo fitxategian gorde dira:" + IRAGARPENAK_PATH);
     }
-
-
-
-
-
-
 
 
     // ----------------------- PARAM ALDAKETAK -----------------------------
@@ -383,8 +310,7 @@ public class Main {
         while (!exitMenu){
             Scanner scanner = new Scanner(System.in);
 
-
-            System.out.println("Fitxategien kokapenaren aldaketa:");
+            System.out.println("\n\nFitxategien kokapenaren aldaketa:");
             System.out.println("1. TRAIN_ARFF_PATH: " + TRAIN_ARFF_PATH);
             System.out.println("2. DEV_ARFF_PATH: " + DEV_ARFF_PATH);
             System.out.println("3. ANALISIS_TRAIN_TXT_PATH: " + ANALISIS_TRAIN_TXT_PATH);
@@ -396,11 +322,9 @@ public class Main {
             System.out.println("9. FSS_TRAIN_ARFF_PATH: " + FSS_TRAIN_ARFF_PATH);
             System.out.println("10. DICTIONARY_TXT_PATH: " + DICTIONARY_TXT_PATH);
             System.out.println("11. COMPATIBLE_DEV_ARFF_PATH: " + COMPATIBLE_DEV_ARFF_PATH);
-            System.out.println("12. Irten");
-
+            System.out.println("0. Irten");
 
             int aukera = scanner.nextInt();
-
 
             switch (aukera) {
                 case 1:
@@ -436,7 +360,7 @@ public class Main {
                 case 11:
                     COMPATIBLE_DEV_ARFF_PATH = pathAldaketa("COMPATIBLE_DEV_ARFF_PATH", scanner);
                     break;
-                case 12:
+                case 0:
                     System.out.println("Menu nagusira bueltatzen...");
                     exitMenu = true;
                     break;
@@ -446,7 +370,6 @@ public class Main {
         }
     }
 
-
     private static String pathAldaketa(String pathIzena, Scanner scanner) {
         System.out.println("Hurrengo path-erako balio berria sakatu " + pathIzena + ": ");
         String pathBerria = scanner.next();
@@ -454,14 +377,12 @@ public class Main {
         return pathBerria;
     }
 
-
     private static void settingsAldaketa() {
         Boolean exitMenu = false;
         while (!exitMenu){
             Scanner scanner = new Scanner(System.in);
 
-
-            System.out.println("Setting-en aldaketa:");
+            System.out.println("\n\nSetting-en aldaketa:");
             System.out.println("1. HOLD_OUT_PERCENTAGE: " + HOLD_OUT_PERCENTAGE);
             System.out.println("2. IRAGARPEN_MODELOA: " + IRAGARPEN_MODELOA);
             System.out.println("3. FSS_WORDS_TO_KEEP: " + FSS_WORDS_TO_KEEP);
@@ -469,12 +390,9 @@ public class Main {
             System.out.println("5. READ_CSV_EMOJIS: " + READ_CSV_EMOJIS);
             System.out.println("6. ANALIZATUTAKO DATUAK: " + ANALIZATUTAKO_DATUAK);
 
-
-            System.out.println("10. Irten");
-
+            System.out.println("0. Irten");
 
             int aukera = scanner.nextInt();
-
 
             switch (aukera) {
                 case 1:
@@ -497,9 +415,7 @@ public class Main {
                         System.out.println("4. NT: " + NT);
                         System.out.println("0. Irten");
 
-
                         int aukeraRF = scanner.nextInt();
-
 
                         switch (aukeraRF) {
                             case 1:
@@ -525,10 +441,27 @@ public class Main {
                     READ_CSV_EMOJIS = !READ_CSV_EMOJIS;
                     break;
                 case 6:
-                    System.out.println("Aukera posibleak: train, dev");
+                    System.out.println("Aukera posibleak: //RAW Train, RAW Dev, RAW Test, RAW Combined, NEW Train, NEW Dev, BOW Train, FSS Train, Compatible Dev");
+                    System.out.println("1. RAW Train, RAW Dev, RAW Test, RAW Combined, NEW Train, NEW Dev, BOW Train, FSS Train, Compatible Dev");
+                    System.out.println("2. RAW Dev, RAW Test, RAW Combined, NEW Train, NEW Dev, BOW Train, FSS Train, Compatible Dev");
+                    System.out.println("3. RAW Test, RAW Combined, NEW Train, NEW Dev, BOW Train, FSS Train, Compatible Dev");
+                    System.out.println("4. RAW Combined, NEW Train, NEW Dev, BOW Train, FSS Train, Compatible Dev");
+                    System.out.println("5. NEW Train, NEW Dev, BOW Train, FSS Train, Compatible Dev");
+                    System.out.println("6. NEW Dev, BOW Train, FSS Train, Compatible Dev");
+                    System.out.println("7. BOW Train, FSS Train, Compatible Dev");
+                    System.out.println("8. FSS Train, Compatible Dev");
+                    System.out.println("9. Compatible Dev");
+
+                    int aukera6 = scanner.nextInt();
+                    switch (aukera6) {
+                        case 1:
+                            HOLD_OUT_PERCENTAGE = Integer.parseInt(aukeraAldatu("HOLD_OUT_PERCENTAGE", scanner));
+                            break;
+                    }
+
                     ANALIZATUTAKO_DATUAK = aukeraAldatu("ANALIZATUTAKO_DATUAK",  scanner);
                     break;
-                case 10:
+                case 0:
                     System.out.println("Menu nagusira bueltatzen...");
                     exitMenu = true;
                     break;
@@ -538,16 +471,11 @@ public class Main {
         }
     }
 
-
     private static String aukeraAldatu(String settingIzena, Scanner scanner) {
         System.out.println(settingIzena + "-ren balio sakatu: ");
         String newValue = scanner.next();
         System.out.println(settingIzena + " -ren balioa hurrengoa da orain: " + newValue );
 
-
         return newValue;
     }
-
-
 }
-

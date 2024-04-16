@@ -33,24 +33,25 @@ public class GetRawData {
         emojiList = pemojiList;
         readEmoji = preadEmoji;
 
-
         List<String> emojis = new ArrayList<>();
 
         try {
             emojis = Files.readAllLines(Paths.get(emojiList));
-
         } catch (IOException e) {
             e.printStackTrace();
         }
 
         String modifiedPath = pathOut + csvName + modified + csvName + ".csv";
         emojiModify(csvName, emojis, modifiedPath);
+        System.out.println("Emojiak hitz bakar bat bezala gorde dira " + csvName + "-an");
 
         String modifiedPath2 = pathOut + csvName + modified + csvName + "2.csv";
         groupInstancesByID(modifiedPath,modifiedPath2);
+        System.out.println("ID-z batu dira instantziak " + csvName + "-an");
 
         String finalPath = pathOut + csvName + finala + csvName + ".csv";
         csvFinal(modifiedPath2, finalPath);
+        System.out.println("Komilla doble errepikatuak ordezkatu egin dira " + csvName + "-an");
 
         try (
                 BufferedReader br = new BufferedReader(new FileReader(finalPath));
@@ -58,10 +59,8 @@ public class GetRawData {
         ) {
             // ARFF-aren goiburua idatzi
             pw.println("@relation IberLef-Challenge");
-            //pw.println("@attribute 'idValue' string");
             pw.println("@attribute 'claseValue' {0,1}");
             pw.println("@attribute 'textValue' string");
-            //pw.println("@attribute 'dateValue' date 'yyyy-MM-dd HH:mm:ss'");
             pw.println("@data");
 
             String line;
@@ -70,16 +69,6 @@ public class GetRawData {
             while ((line = br.readLine()) != null){
                 List<String> values = commaSeparate(line);
 
-                // Orain, values' lista bat da non elementu bakoitza csv-aren zutabe bat den
-                /*
-                System.out.println("Columna 1: " + values.get(0)); // Lehen parametroa
-                System.out.println("Columna 2: " + values.get(1)); // Bigarren parametroa
-                System.out.println("Columna 3: " + values.get(2)); // Hirugarren parametroa
-                System.out.println("Columna 4: " + values.get(3)); // Laugarren parametroa
-                */
-
-                //ARFF-an idatziko den formatuan idatzi ilara osoa
-                //String processedLine = values.get(0) + "," + values.get(1) + ",\"" + values.get(2) + "\",\"" + values.get(3) + "\"";
                 String processedLine = values.get(1) + ",\"" + values.get(2) + "\"";
                 pw.println(processedLine);
             }
@@ -91,15 +80,9 @@ public class GetRawData {
         //Ezabatu pausuak emateko egin diren artxibo lagungarriak partial, modified
         File modified = new File(modifiedPath);
         modified.delete();
-
-        //Finala ezabatu?
-        //File finala = new File("src/x_out/final_" + csvPath);
-        //finala.delete();
-
+        File modified2 = new File(modifiedPath2);
+        modified2.delete();
     }
-
-
-
 
 
     // --------------------- METODOAK -------------------------
@@ -108,6 +91,7 @@ public class GetRawData {
         /**
          * CSV fitxategiko instantziak ID-aren arabera taldekatzen ditu csv berri bat sortuz
          */
+        Map<String, StringBuilder> labelMap = new HashMap<>();
         Map<String, StringBuilder> messagesMap = new HashMap<>();
 
         try (BufferedReader reader = new BufferedReader(new FileReader(inputFilePath));
@@ -136,30 +120,29 @@ public class GetRawData {
                 String message = parts.get(2);
 
                 if (!messagesMap.containsKey(id)) {
+                    labelMap.put(id, new StringBuilder());
                     messagesMap.put(id, new StringBuilder());
-                    // Agregar la etiqueta solo una vez para cada ID
-                    messagesMap.get(id).append(label).append(",");
+                    // Etiketa behin bakarrik gehitu ID bakoitzerako
+                    labelMap.get(id).append(label);
                 }
-                // Añadir el mensaje
-                messagesMap.get(id).append(message).append(", ");
+                // Mezua gehitu
+                messagesMap.get(id).append(message).append(" ");
             }
 
             for (Map.Entry<String, StringBuilder> entry : messagesMap.entrySet()) {
                 String id = entry.getKey();
+                String label = labelMap.get(id).toString();
                 String message = entry.getValue().toString();
                 message = message.substring(0, message.length() - 2); // koma eta zuriunea kentzeko
-                writer.write(id + ", " + message);
+                writer.write(id + ", " + label + ", \"" + message + "\"");
                 writer.newLine();
             }
 
-            System.out.println("ID-z batu dira instantziak");
         } catch (IOException e) {
             System.err.println("Errore bat gauzatu egin da: " + e.getMessage());
             e.printStackTrace();
         }
     }
-
-
 
 
     public static void emojiModify(String csvPath, List<String> emojiSet, String outputPath) {
@@ -173,11 +156,11 @@ public class GetRawData {
             while ((line = br.readLine()) != null) {
                 String modifiedLine = line;
                 for (String emoji : emojiSet) {
-                    // Crear un patrón de expresión regular para cada emoji
+                    // Emoji bakoitzerako adierazpen-eredu erregular bat sortzea
                     String regexPattern = "\\b" + Pattern.quote(emoji) + "\\b";
                     Pattern pattern = Pattern.compile(regexPattern);
                     Matcher matcher = pattern.matcher(modifiedLine);
-                    // Reemplazar todos los emojis encontrados en la línea
+                    // Linean aurkitutako emoji guztiak ordezkatu
 
                     if (readEmoji){
                         modifiedLine = matcher.replaceAll(emoji.replace(" ", "_"));
@@ -185,10 +168,8 @@ public class GetRawData {
                     else{
                         modifiedLine = matcher.replaceAll("");
                     }
-
-
                 }
-                // Escribir la línea modificada al archivo de salida
+                // Aldatu den linea irteera-fitxategira idatzi
                 bw.write(modifiedLine);
                 bw.newLine();
             }
@@ -220,23 +201,23 @@ public class GetRawData {
          * Komilla doble errepikatuak ("") aldatuko ditu komilla bakar batengatik (')
          * hau bakarrik gertatuko da lehen karakterea " bat baldin ez bada text parametroan
          * */
-        // Encuentra el índice del primer par de comillas dobles
+        // Aurkitu komatxo bikoitzen lehen parearen aurkibidea
         int indexOfFirstDoubleQuote = line.indexOf("\"");
 
-        // Si se encuentra al menos un par de comillas dobles
+        // Gutxienez pare bat komatxo bikoitz badaude
         if (indexOfFirstDoubleQuote != -1) {
-            // Divide la cadena en tres partes: antes, durante, y después del primer par de comillas dobles
-            String beforeFirstDoubleQuote = line.substring(0, indexOfFirstDoubleQuote + 1); // Incluye la primera comilla en la parte "antes"
-            String afterFirstDoubleQuote = line.substring(indexOfFirstDoubleQuote + 1); // Resto de la cadena después de la primera comilla
+            // Katea hiru zatitan banatzen du: lehen komatxo bikoitzaren aurretik, bitartean, eta ondoren
+            String beforeFirstDoubleQuote = line.substring(0, indexOfFirstDoubleQuote + 1); // Sartu lehen komatxoa "before" zatian
+            String afterFirstDoubleQuote = line.substring(indexOfFirstDoubleQuote + 1); // Katearen hondarra lehen komatxoaren ondoren
 
-            // Reemplaza todos los demás pares de comillas dobles en la parte "después"
+            // Ordeztu gainerako komatxo bikoitz pare guztiak "after" zatian
             String processedAfterFirstDoubleQuote = afterFirstDoubleQuote.replace("\"\"", "'");
 
-            // Concatena y devuelve el resultado
+            // Batu eta emaitza itzuli
             return beforeFirstDoubleQuote + processedAfterFirstDoubleQuote;
         }
 
-        // Si no hay comillas dobles seguidas, devuelve la línea sin cambios
+        // Jarraian komatxo bikoitzik ez badago, itzuli lerroa aldaketarik gabe
         return line;
     }
 

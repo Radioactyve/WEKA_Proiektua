@@ -1,17 +1,18 @@
 package Data;
 
-import weka.core.Attribute;
 import weka.core.AttributeStats;
 import weka.core.Instances;
 import weka.core.converters.ConverterUtils.DataSource;
 
 import java.io.FileWriter;
-import java.util.*;
 
 public class AnalizeData {
     private static String textAttributename = "claseValue";
 
     public static void main(String arffToAnalize, String AnalisisTxt) {
+        /**
+         * Datuen hainbat informazio gordetzen du, hala nola, instantza kopurua, atributu kopurua...
+         */
         try {
             // --- DataSource ---
             DataSource source = new DataSource(arffToAnalize);
@@ -45,8 +46,10 @@ public class AnalizeData {
         }
     }
 
-
     private static int countMissingValues(Instances data, int attributeIndex) {
+        /**
+         * Missing balioak kontatzen ditu
+         */
         int missingValues = 0;
 
         for (int i = 0; i < data.numInstances(); i++) {

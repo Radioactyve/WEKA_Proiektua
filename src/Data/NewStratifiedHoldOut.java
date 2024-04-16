@@ -17,6 +17,10 @@ public class NewStratifiedHoldOut {
 
 
     public static void NewStratifiedHoldOut(int sampleSize,String trainArffPath, String newTrainArffPath, String devArffPath, String newDevArffPath, String combinedArffPath) {
+        /**
+         * Erabili ditugun train eta dev hartu, juntatu eta hauekin train eta dev berri sortuko ditu
+         * parametro moduan sartzen den sample size (portzentaia) erabiliz
+         */
         try {
             trainArff = trainArffPath;
             newTrainArff = newTrainArffPath;
@@ -35,6 +39,9 @@ public class NewStratifiedHoldOut {
     }
 
     private static void juntatu() {
+        /**
+         * Train eta dev juntatu eta combined.arff bat sortu datu guztiekin
+         */
         try {
             // Abrir el primer archivo
             BufferedReader reader1 = new BufferedReader(new FileReader(trainArff));
@@ -78,6 +85,9 @@ public class NewStratifiedHoldOut {
 
 
     private static void banatu(double sampleSize) throws Exception {
+        /**
+         * Combined.arff-an dauden datuak banandu train eta dev berri batzuetan parametro moduan sartutako portzentaiarekin
+         */
         // Datuak kargatu
         DataSource source = new DataSource(combinedArff);
         Instances data = source.getDataSet();

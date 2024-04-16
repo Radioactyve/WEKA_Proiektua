@@ -27,13 +27,11 @@ public class ParametroEkorketa {
             data.setClassIndex(data.attribute("claseValue").index());
         }
 
-
         DataSource dataSource1 = new DataSource(args[1]);
         Instances dataDev = dataSource1.getDataSet();
         if (dataDev.classIndex() == -1) {
             dataDev.setClassIndex(dataDev.attribute("claseValue").index());
         }
-
 
         //CSV fitxategia sortu eta hasierako infromazioa sartu
         BufferedWriter writer = new BufferedWriter(new FileWriter(args[2]));
@@ -46,7 +44,6 @@ public class ParametroEkorketa {
         }
         writer.newLine();
 
-
         PrintWriter writer1 = new PrintWriter(new FileWriter(args[3]));
         // Escribir la cabecera
         for (int i = 0; i < header.length; i++) {
@@ -56,7 +53,6 @@ public class ParametroEkorketa {
             }
         }
         writer1.println();
-
 
         //Klase minoritarioa kalkulatu
         AttributeStats attrStats = data.attributeStats(data.attribute("claseValue").index());
@@ -71,7 +67,6 @@ public class ParametroEkorketa {
         }
         System.out.println(minoritarioa);
 
-
         //Parametroak sortu eta hasieratu 0 ra
         double optFMeasure = 0.0;
         int PNopt = 0;
@@ -79,8 +74,7 @@ public class ParametroEkorketa {
         int NTopt = 0;
         int MDopt = 0;
         long denbOpt = 0;
-        String[] datuak = {};
-
+        String[] datuak;
 
         int loop = 0;
         //Random forest-a sortu eta atributuen erro karratua
@@ -106,21 +100,17 @@ public class ParametroEkorketa {
             maxNT = 51;
         }
 
-
-
-
         //PN ratio
-        for (int PN = 10; PN < 25; PN += 1) { //atributuen erroa bainon txikiagorarte
+        for (int PN = 10; PN < erroAtributuPN; PN += 1) { //atributuen erroa bainon txikiagorarte
             //BagSizePercentage
-            for (int BSP = 1; BSP < 2; BSP += 4) {//Gure kasuan datu askorekin lan egingo dugunez, portzentai txiki bat erabiliko dugu. 4%-ko saltoak
+            for (int BSP = 1; BSP < maxBSP; BSP += 4) {//Gure kasuan datu askorekin lan egingo dugunez, portzentai txiki bat erabiliko dugu. 4%-ko saltoak
                 //maxDepth
-                for (int MD = 1; MD < 2; MD += 10) {
+                for (int MD = 1; MD < erroAtributuMD; MD += 10) {
                     //numTree
                     for (int NT = 10; NT < maxNT; NT += 1) {
                         //loop count
                         loop++;
                         System.out.println(loop);
-
 
                         //parametroak zehaztu
                         if (usePN) {
@@ -136,14 +126,12 @@ public class ParametroEkorketa {
                             RF.setNumIterations(NT);
                         }
 
-
                         long Hasiera = System.nanoTime();
                         Evaluation evaluator = new Evaluation(data);
                         evaluator.crossValidateModel(RF, dataDev, 5, new Random(1));
                         long Amaiera = System.nanoTime();
                         long exDenb = Amaiera - Hasiera;
                         double Fmeasure = evaluator.fMeasure(1);
-
 
                         //Datuak gorde
                         datuak = new String[]{String.valueOf(PN), String.valueOf(BSP), String.valueOf(MD), String.valueOf(NT), String.valueOf(Fmeasure), String.valueOf(exDenb)};
@@ -156,12 +144,10 @@ public class ParametroEkorketa {
                         writer.flush();
                         writer.newLine();
 
-
                         System.out.println("Correct= " + evaluator.pctCorrect());
                         System.out.println(evaluator.fMeasure(1));
                         System.out.println("ClassDetail= " + evaluator.toClassDetailsString());
                         System.out.println("SummaryString= " + evaluator.toSummaryString());
-
 
                         //Balio optimoak eguneratu
                         if (evaluator.fMeasure(1) > optFMeasure) {
@@ -178,10 +164,6 @@ public class ParametroEkorketa {
                             MDopt = MD;
                             NTopt = NT;
                             denbOpt = exDenb;
-
-
-
-
                         }
                     }
                 }
@@ -205,31 +187,6 @@ public class ParametroEkorketa {
         System.out.println("Eta hauek dira emaitzak:");
         System.out.println("F-measure: " + optFMeasure);
         System.out.println("Exekuzio denbora: " + denbOpt);
-
-
-     /*
-     //-------------------------------- [UNO DE PRUEBA SIMPLE]----------------------------
-     // Crear un clasificador RandomForest
-     RandomForest forest = new RandomForest();
-     forest.setNumExecutionSlots(Runtime.getRuntime().availableProcessors());
-
-
-     // Entrenar el clasificador con los datos
-     forest.buildClassifier(data);
-
-
-     // Realizar evaluación cruzada del modelo
-     Evaluation eval = new Evaluation(data);
-     eval.evaluateModel(forest,dataDev);
-     //eval.crossValidateModel(forest, data, 10, new Random(1));
-
-
-     // Imprimir resultados
-     System.out.println("Accuracy: " + eval.pctCorrect());
-     System.out.println("Kappa: " + eval.kappa());
-     System.out.println("Confusion Matrix:\n" + eval.toMatrixString());
-     System.out.println("Summary:\n" + eval.toSummaryString());
-      */
     }
 }
 
