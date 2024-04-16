@@ -81,16 +81,16 @@ public class Main {
 
     // ------------------------------ [SETTINGS] --------------------------------------
     private static boolean READ_CSV_EMOJIS = true;
-    private static int HOLD_OUT_PERCENTAGE = 70;
-    private static int FSS_WORDS_TO_KEEP = 5000;
+    private static int HOLD_OUT_PERCENTAGE = 80;
+    private static int FSS_WORDS_TO_KEEP = 2000;
     private static String IRAGARPEN_MODELOA = "RF";
     private static String ANALIZATUTAKO_DATUAK = "train";
 
 
-    // ---- (RF PARAMETERS) ----
+    // ---- (RF PARAMETERS) ----S
     private static Boolean PN = true;
-    private static Boolean BSP = true;
-    private static Boolean MD = true;
+    private static Boolean BSP = false;
+    private static Boolean MD = false;
     private static Boolean NT = true;
 
 
@@ -118,7 +118,7 @@ public class Main {
             System.out.println("6. Datuak analizatu");
             System.out.println("7. Fitxategien kokapena aldatu");
             System.out.println("8. Programen exekuzio aukerak aldatu");
-            System.out.println("9. Irten");
+            System.out.println("0. Irten");
 
 
             int aukera = scanner.nextInt();
@@ -174,6 +174,8 @@ public class Main {
 
 
     private static void prestatuData() throws Exception {
+        //Data.newCSV();
+
         Data.GetRawData.GetRawData("train", TRAIN_ARFF_PATH,PATH_IN,PATH_OUT,MODIFIED_PATH,FINAL_PATH,EMOJI_LIST,READ_CSV_EMOJIS);
         Data.GetRawData.GetRawData("dev", DEV_ARFF_PATH,PATH_IN,PATH_OUT,MODIFIED_PATH,FINAL_PATH,EMOJI_LIST,READ_CSV_EMOJIS);
 
@@ -520,7 +522,7 @@ public class Main {
                     }
                     break;
                 case 5:
-                    READ_CSV_EMOJIS = Boolean.parseBoolean(aukeraAldatu("READ_CSV_EMOJIS",  scanner));
+                    READ_CSV_EMOJIS = !READ_CSV_EMOJIS;
                     break;
                 case 6:
                     System.out.println("Aukera posibleak: train, dev");

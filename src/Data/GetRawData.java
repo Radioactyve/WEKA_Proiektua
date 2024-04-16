@@ -4,7 +4,9 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.*;
 
 public class GetRawData {
@@ -44,8 +46,11 @@ public class GetRawData {
         String modifiedPath = pathOut + csvName + modified + csvName + ".csv";
         emojiModify(csvName, emojis, modifiedPath);
 
+        String modifiedPath2 = pathOut + csvName + modified + csvName + "2.csv";
+        groupInstancesByID(modifiedPath,modifiedPath2);
+
         String finalPath = pathOut + csvName + finala + csvName + ".csv";
-        csvFinal(modifiedPath, finalPath);
+        csvFinal(modifiedPath2, finalPath);
 
         try (
                 BufferedReader br = new BufferedReader(new FileReader(finalPath));
@@ -92,6 +97,70 @@ public class GetRawData {
         //finala.delete();
 
     }
+
+
+
+
+
+    // --------------------- METODOAK -------------------------
+
+    private static void groupInstancesByID(String inputFilePath, String outputFilePath) {
+        /**
+         * CSV fitxategiko instantziak ID-aren arabera taldekatzen ditu csv berri bat sortuz
+         */
+        Map<String, StringBuilder> messagesMap = new HashMap<>();
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(inputFilePath));
+             BufferedWriter writer = new BufferedWriter(new FileWriter(outputFilePath))) {
+
+            String header = reader.readLine(); // header-a irakurri
+            // Date header-a kendu
+            String[] headerParts = header.split(",");
+            StringBuilder modifiedHeader = new StringBuilder();
+            for (String part : headerParts) {
+                if (!part.trim().equalsIgnoreCase("date")) {
+                    modifiedHeader.append(part.trim()).append(",");
+                }
+            }
+            // Azkenengo koma kendu
+            modifiedHeader.deleteCharAt(modifiedHeader.length() - 1);
+            // Write Header
+            writer.write(modifiedHeader.toString());
+            writer.newLine();
+
+            String line;
+            while ((line = reader.readLine()) != null) {
+                List<String> parts = commaSeparate(line);
+                String id = parts.get(0);
+                String label = parts.get(1);
+                String message = parts.get(2);
+
+                if (!messagesMap.containsKey(id)) {
+                    messagesMap.put(id, new StringBuilder());
+                    // Agregar la etiqueta solo una vez para cada ID
+                    messagesMap.get(id).append(label).append(",");
+                }
+                // Añadir el mensaje
+                messagesMap.get(id).append(message).append(", ");
+            }
+
+            for (Map.Entry<String, StringBuilder> entry : messagesMap.entrySet()) {
+                String id = entry.getKey();
+                String message = entry.getValue().toString();
+                message = message.substring(0, message.length() - 2); // koma eta zuriunea kentzeko
+                writer.write(id + ", " + message);
+                writer.newLine();
+            }
+
+            System.out.println("ID-z batu dira instantziak");
+        } catch (IOException e) {
+            System.err.println("Errore bat gauzatu egin da: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+
+
 
     public static void emojiModify(String csvPath, List<String> emojiSet, String outputPath) {
         /**
