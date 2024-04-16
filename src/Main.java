@@ -75,6 +75,7 @@ public class Main {
     private static int HOLD_OUT_PERCENTAGE = 80;
     private static int FSS_WORDS_TO_KEEP = 2000;
     private static String IRAGARPEN_MODELOA = "RF";
+    private static String IRAGARPEN_MOTA = "User"; //User, Message
     private static String ANALIZATUTAKO_DATUAK = "RAW Train"; //RAW Train, RAW Dev, RAW Test, RAW Combined, NEW Train, NEW Dev, BOW Train, FSS Train, Compatible Dev
 
 
@@ -89,7 +90,7 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
         while (true) {
             // Menú de opciones
-            System.out.println("--------------MENU NAGUSIA-----------------");
+            System.out.println("\n\n\n--------------MENU NAGUSIA-----------------");
             System.out.println("PROGRAMAK");
             System.out.println("1. Modeloa eraiki (" + IRAGARPEN_MODELOA + ")" );
             System.out.println("2. Baseline kalitatea");
@@ -146,8 +147,8 @@ public class Main {
     // ------------------------------ [METODOAK] --------------------------------------
     private static void prestatuData() throws Exception {
         //Data.newCSV();
-        Data.GetRawData.GetRawData("train", TRAIN_ARFF_PATH,PATH_IN,PATH_OUT,MODIFIED_PATH,FINAL_PATH,EMOJI_LIST,READ_CSV_EMOJIS);
-        Data.GetRawData.GetRawData("dev", DEV_ARFF_PATH,PATH_IN,PATH_OUT,MODIFIED_PATH,FINAL_PATH,EMOJI_LIST,READ_CSV_EMOJIS);
+        Data.GetRawData.GetRawData("train", TRAIN_ARFF_PATH,PATH_IN,PATH_OUT,MODIFIED_PATH,FINAL_PATH,EMOJI_LIST,READ_CSV_EMOJIS,IRAGARPEN_MOTA);
+        Data.GetRawData.GetRawData("dev", DEV_ARFF_PATH,PATH_IN,PATH_OUT,MODIFIED_PATH,FINAL_PATH,EMOJI_LIST,READ_CSV_EMOJIS,IRAGARPEN_MOTA);
 
         AnalizeData.main(TRAIN_ARFF_PATH, ANALISIS_TRAIN_TXT_PATH);
         AnalizeData.main(DEV_ARFF_PATH, ANALISIS_DEV_TXT_PATH);
@@ -161,14 +162,44 @@ public class Main {
     }
 
     private static void analizeData() throws Exception {
+        //RAW Train, RAW Dev, RAW Test, RAW Combined, NEW Train, NEW Dev, BOW Train, FSS Train, Compatible Dev
         System.out.println(ANALIZATUTAKO_DATUAK + " aztertzen...");
-        if (ANALIZATUTAKO_DATUAK.equals("dev")){
+        if (ANALIZATUTAKO_DATUAK.equals("RAW Train")){
+            Data.AnalizeData.main(TRAIN_ARFF_PATH,ANALISIS_TRAIN_TXT_PATH);
+            System.out.println("Analisia hurrengo fitxategian gorde da:" + ANALISIS_TRAIN_TXT_PATH);
+
+        }
+        else if (ANALIZATUTAKO_DATUAK.equals("RAW Dev")){
             Data.AnalizeData.main(DEV_ARFF_PATH,ANALISIS_DEV_TXT_PATH);
             System.out.println("Analisia hurrengo fitxategian gorde da:" + ANALISIS_DEV_TXT_PATH);
         }
-        else{
-            Data.AnalizeData.main(TRAIN_ARFF_PATH,ANALISIS_TRAIN_TXT_PATH);
-            System.out.println("Analisia hurrengo fitxategian gorde da:" + ANALISIS_TRAIN_TXT_PATH);
+        else if (ANALIZATUTAKO_DATUAK.equals("RAW Test")){
+            Data.AnalizeData.main(TEST_ARFF_PATH,ANALISIS_DEV_TXT_PATH);
+            System.out.println("Analisia hurrengo fitxategian gorde da:" + ANALISIS_DEV_TXT_PATH);
+        }
+        else if (ANALIZATUTAKO_DATUAK.equals("RAW Combined")){
+            Data.AnalizeData.main(COMBINED_ARFF_PATH,ANALISIS_DEV_TXT_PATH);
+            System.out.println("Analisia hurrengo fitxategian gorde da:" + ANALISIS_DEV_TXT_PATH);
+        }
+        else if (ANALIZATUTAKO_DATUAK.equals("NEW Train")){
+            Data.AnalizeData.main(NEW_TRAIN_ARFF_PATH,ANALISIS_DEV_TXT_PATH);
+            System.out.println("Analisia hurrengo fitxategian gorde da:" + ANALISIS_DEV_TXT_PATH);
+        }
+        else if (ANALIZATUTAKO_DATUAK.equals("NEW Dev")){
+            Data.AnalizeData.main(NEW_DEV_ARFF_PATH,ANALISIS_DEV_TXT_PATH);
+            System.out.println("Analisia hurrengo fitxategian gorde da:" + ANALISIS_DEV_TXT_PATH);
+        }
+        else if (ANALIZATUTAKO_DATUAK.equals("BOW Train")){
+            Data.AnalizeData.main(BOW_TRAIN_ARFF_PATH,ANALISIS_DEV_TXT_PATH);
+            System.out.println("Analisia hurrengo fitxategian gorde da:" + ANALISIS_DEV_TXT_PATH);
+        }
+        else if (ANALIZATUTAKO_DATUAK.equals("FSS Train")){
+            Data.AnalizeData.main(FSS_TRAIN_ARFF_PATH,ANALISIS_DEV_TXT_PATH);
+            System.out.println("Analisia hurrengo fitxategian gorde da:" + ANALISIS_DEV_TXT_PATH);
+        }
+        else if (ANALIZATUTAKO_DATUAK.equals("Compatible Dev")){
+            Data.AnalizeData.main(COMPATIBLE_DEV_ARFF_PATH,ANALISIS_DEV_TXT_PATH);
+            System.out.println("Analisia hurrengo fitxategian gorde da:" + ANALISIS_DEV_TXT_PATH);
         }
     }
 
@@ -187,14 +218,14 @@ public class Main {
 
     private static void modeloaEraiki() throws Exception {
         //DATA PRESTATU
-        Data.GetRawData.GetRawData("train", TRAIN_ARFF_PATH,PATH_IN,PATH_OUT,MODIFIED_PATH,FINAL_PATH,EMOJI_LIST,READ_CSV_EMOJIS);
-        Data.GetRawData.GetRawData("dev", DEV_ARFF_PATH,PATH_IN,PATH_OUT,MODIFIED_PATH,FINAL_PATH,EMOJI_LIST,READ_CSV_EMOJIS);
+        Data.GetRawData.GetRawData("train", TRAIN_ARFF_PATH,PATH_IN,PATH_OUT,MODIFIED_PATH,FINAL_PATH,EMOJI_LIST,READ_CSV_EMOJIS,IRAGARPEN_MOTA);
+        Data.GetRawData.GetRawData("dev", DEV_ARFF_PATH,PATH_IN,PATH_OUT,MODIFIED_PATH,FINAL_PATH,EMOJI_LIST,READ_CSV_EMOJIS,IRAGARPEN_MOTA);
         Data.NewStratifiedHoldOut.NewStratifiedHoldOut(HOLD_OUT_PERCENTAGE, TRAIN_ARFF_PATH, NEW_TRAIN_ARFF_PATH,  DEV_ARFF_PATH, NEW_DEV_ARFF_PATH, COMBINED_ARFF_PATH);
 
         Data.S2WData.S2WData(COMBINED_ARFF_PATH, BOW_COMBINED_ARFF_PATH);
         Data.FSS.FSS(BOW_COMBINED_ARFF_PATH, FSS_COMBINED_ARFF_PATH, DICTIONARY_TXT_PATH,FSS_WORDS_TO_KEEP);
 
-        Data.GetRawData.GetRawData("test", TEST_ARFF_PATH,PATH_IN,PATH_OUT,MODIFIED_PATH,FINAL_PATH,EMOJI_LIST,READ_CSV_EMOJIS);
+        Data.GetRawData.GetRawData("test", TEST_ARFF_PATH,PATH_IN,PATH_OUT,MODIFIED_PATH,FINAL_PATH,EMOJI_LIST,READ_CSV_EMOJIS,IRAGARPEN_MOTA);
         Data.MakeCompatible.MakeCompatible(TEST_ARFF_PATH, COMPATIBLE_TEST_PATH, DICTIONARY_TXT_PATH);
 
         //Datuak kargatu
@@ -389,6 +420,7 @@ public class Main {
             System.out.println("4. RF PARAMETROAK ALDATU");
             System.out.println("5. READ_CSV_EMOJIS: " + READ_CSV_EMOJIS);
             System.out.println("6. ANALIZATUTAKO DATUAK: " + ANALIZATUTAKO_DATUAK);
+            System.out.println("7. IRAGARPEN MOTA: " + IRAGARPEN_MOTA);
 
             System.out.println("0. Irten");
 
@@ -441,26 +473,69 @@ public class Main {
                     READ_CSV_EMOJIS = !READ_CSV_EMOJIS;
                     break;
                 case 6:
-                    System.out.println("Aukera posibleak: //RAW Train, RAW Dev, RAW Test, RAW Combined, NEW Train, NEW Dev, BOW Train, FSS Train, Compatible Dev");
-                    System.out.println("1. RAW Train, RAW Dev, RAW Test, RAW Combined, NEW Train, NEW Dev, BOW Train, FSS Train, Compatible Dev");
-                    System.out.println("2. RAW Dev, RAW Test, RAW Combined, NEW Train, NEW Dev, BOW Train, FSS Train, Compatible Dev");
-                    System.out.println("3. RAW Test, RAW Combined, NEW Train, NEW Dev, BOW Train, FSS Train, Compatible Dev");
-                    System.out.println("4. RAW Combined, NEW Train, NEW Dev, BOW Train, FSS Train, Compatible Dev");
-                    System.out.println("5. NEW Train, NEW Dev, BOW Train, FSS Train, Compatible Dev");
-                    System.out.println("6. NEW Dev, BOW Train, FSS Train, Compatible Dev");
-                    System.out.println("7. BOW Train, FSS Train, Compatible Dev");
-                    System.out.println("8. FSS Train, Compatible Dev");
+                    System.out.println("Aukera posibleak:");
+                    System.out.println("1. RAW Train");
+                    System.out.println("2. RAW Dev");
+                    System.out.println("3. RAW Test");
+                    System.out.println("4. RAW Combined");
+                    System.out.println("5. NEW Train");
+                    System.out.println("6. NEW Dev");
+                    System.out.println("7. BOW Train");
+                    System.out.println("8. FSS Train");
                     System.out.println("9. Compatible Dev");
 
                     int aukera6 = scanner.nextInt();
                     switch (aukera6) {
                         case 1:
-                            HOLD_OUT_PERCENTAGE = Integer.parseInt(aukeraAldatu("HOLD_OUT_PERCENTAGE", scanner));
+                            ANALIZATUTAKO_DATUAK = "RAW Train";
+                            break;
+                        case 2:
+                            ANALIZATUTAKO_DATUAK = "RAW Dev";
+                            break;
+                        case 3:
+                            ANALIZATUTAKO_DATUAK = "RAW Test";
+                            break;
+                        case 4:
+                            ANALIZATUTAKO_DATUAK = "RAW Combined";
+                            break;
+                        case 5:
+                            ANALIZATUTAKO_DATUAK = "NEW Train";
+                            break;
+                        case 6:
+                            ANALIZATUTAKO_DATUAK = "NEW Dev";
+                            break;
+                        case 7:
+                            ANALIZATUTAKO_DATUAK = "BOW Train";
+                            break;
+                        case 8:
+                            ANALIZATUTAKO_DATUAK = "FSS Train";
+                            break;
+                        case 9:
+                            ANALIZATUTAKO_DATUAK = "Compatible Dev";
+                            break;
+                        default:
+                            System.out.println("Arazoren bat egon da, mesedez aukera egoki bat sakatu");
                             break;
                     }
 
-                    ANALIZATUTAKO_DATUAK = aukeraAldatu("ANALIZATUTAKO_DATUAK",  scanner);
-                    break;
+                case 7:
+                    System.out.println("Aukera posibleak:");
+                    System.out.println("1. User");
+                    System.out.println("2. Message");
+
+                    int aukera7 = scanner.nextInt();
+                    switch (aukera7) {
+                        case 1:
+                            IRAGARPEN_MOTA = "User";
+                            break;
+                        case 2:
+                            IRAGARPEN_MOTA = "Message";
+                            break;
+                        default:
+                            System.out.println("Arazoren bat egon da, mesedez aukera egoki bat sakatu");
+                            break;
+                    }
+
                 case 0:
                     System.out.println("Menu nagusira bueltatzen...");
                     exitMenu = true;

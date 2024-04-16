@@ -17,8 +17,9 @@ public class GetRawData {
     private static String finala;
     private static String emojiList;
     private static boolean readEmoji;
+    private static String iragarpenMota;
 
-    public static void GetRawData(String csvName, String arffPath, String ppathIn, String ppathOut, String pmodified, String pfinala, String pemojiList, boolean preadEmoji) {
+    public static void GetRawData(String csvName, String arffPath, String ppathIn, String ppathOut, String pmodified, String pfinala, String pemojiList, boolean preadEmoji, String pIragarpenMota) {
         /**
          * Metodo honek bi String motako parametro hartzen ditu, lehenengoa csv-aren path-a eta bigarrena arff baten path-a
          * Metodoak adierazitako csv-an dauden datuak hartzen ditu eta hauekin arff bat sortzen du (jada existitzen ez bada) eta
@@ -32,6 +33,7 @@ public class GetRawData {
         finala = pfinala;
         emojiList = pemojiList;
         readEmoji = preadEmoji;
+        iragarpenMota = pIragarpenMota;
 
         List<String> emojis = new ArrayList<>();
 
@@ -44,9 +46,13 @@ public class GetRawData {
         String modifiedPath = pathOut + csvName + modified + csvName + ".csv";
         emojiModify(csvName, emojis, modifiedPath);
 
-        String modifiedPath2 = pathOut + csvName + modified + csvName + "2.csv";
-        groupInstancesByID(modifiedPath,modifiedPath2);
-        System.out.println("ID-z batu dira instantziak " + csvName + "-an.");
+
+        String modifiedPath2 = modifiedPath;
+        if (iragarpenMota.equals("User")){
+            modifiedPath2 = pathOut + csvName + modified + csvName + "2.csv";
+            groupInstancesByID(modifiedPath,modifiedPath2);
+            System.out.println("ID-z batu dira instantziak " + csvName + "-an.");
+        }
 
         String finalPath = pathOut + csvName + finala + csvName + ".csv";
         csvFinal(modifiedPath2, finalPath);

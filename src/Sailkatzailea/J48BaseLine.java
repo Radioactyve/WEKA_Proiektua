@@ -36,7 +36,8 @@ public class J48BaseLine {
         eval.crossValidateModel(j48, dataDev, 5, new Random(1));
 
         // Imprimir resultados
-        System.out.println("Accuracy: " + eval.pctCorrect());
+        System.out.println("F-Measure: " + eval.fMeasure(1));
+        System.out.println("\nAccuracy: " + eval.pctCorrect());
         System.out.println("Kappa: " + eval.kappa());
         System.out.println("Confusion Matrix:\n" + eval.toMatrixString());
         System.out.println("Summary:\n" + eval.toSummaryString());
