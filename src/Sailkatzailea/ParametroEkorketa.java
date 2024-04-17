@@ -1,9 +1,4 @@
-
-
-
-
 package Sailkatzailea;
-
 
 import weka.classifiers.Evaluation;
 import weka.classifiers.trees.RandomForest;
@@ -15,7 +10,6 @@ import weka.core.converters.ConverterUtils.DataSource;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.PrintWriter;
-import java.util.Random;
 
 
 public class ParametroEkorketa {
@@ -130,10 +124,11 @@ public class ParametroEkorketa {
                         if (useNT) {
                             RF.setNumIterations(NT);
                         }
-
+                        RF.buildClassifier(data);
                         long Hasiera = System.nanoTime();
-                        Evaluation evaluator = new Evaluation(data);
-                        evaluator.crossValidateModel(RF, dataDev, 5, new Random(1));
+                        Evaluation evaluator = new Evaluation(dataDev);
+                        evaluator.evaluateModel(RF,dataDev);
+                        //evaluator.crossValidateModel(RF, dataDev, 5, new Random(1));
                         long Amaiera = System.nanoTime();
                         long exDenb = Amaiera - Hasiera;
                         double Fmeasure = evaluator.fMeasure(1);
@@ -194,7 +189,7 @@ public class ParametroEkorketa {
             System.out.println("NumTree: " + NTopt);
         }
         System.out.println();
-        System.out.println("Eta hauek dira emaitzak:");
+        System.out.println("Hold-Out aplikatuz hurrengo emaitzak lortu dira:");
         System.out.println("F-measure: " + optFMeasure);
         System.out.println(evalOpt.toSummaryString());
         System.out.println(evalOpt.toClassDetailsString());
@@ -206,6 +201,3 @@ public class ParametroEkorketa {
         System.out.println("Parametro ekorketaren exekuzio denbora: " + duration + " seg");
     }
 }
-
-
-
