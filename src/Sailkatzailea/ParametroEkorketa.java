@@ -102,7 +102,7 @@ public class ParametroEkorketa {
             //BagSizePercentage
             for (int BSP = 1; BSP < maxBSP; BSP += 4) {//Gure kasuan datu askorekin lan egingo dugunez, portzentai txiki bat erabiliko dugu. 4%-ko saltoak
                 //maxDepth
-                for (int MD = 1; MD < erroAtributuMD; MD += 10) {
+                for (int MD = 1; MD < erroAtributuMD; MD += 5) {
                     //numTree
                     for (int NT = 10; NT < maxNT; NT += 1) {
                         //loop count
@@ -191,13 +191,16 @@ public class ParametroEkorketa {
         System.out.println();
         System.out.println("Hold-Out aplikatuz hurrengo emaitzak lortu dira:");
         System.out.println("F-measure: " + optFMeasure);
-        System.out.println(evalOpt.toSummaryString());
-        System.out.println(evalOpt.toClassDetailsString());
-        System.out.println(evalOpt.toMatrixString());
-
         long end = System.nanoTime();
         long time = end - start;
         double duration = time / 1_000_000_000.0;
         System.out.println("Parametro ekorketaren exekuzio denbora: " + duration + " seg");
+
+
+        System.out.println(evalOpt.toSummaryString());
+        System.out.println(evalOpt.toClassDetailsString());
+        System.out.println(evalOpt.toMatrixString());
+
+
     }
 }
