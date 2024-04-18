@@ -1,0 +1,6 @@
+
+Instantzia kopurua: 175
+Atributu kopurua: 2
+Klase atributuko missing value kopurua: 0
+ balioa: 0; maiztasuna: 81
+ balioa: 1; maiztasuna: 94

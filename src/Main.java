@@ -12,63 +12,66 @@ import weka.core.SerializationHelper;
 import weka.core.converters.ConverterUtils;
 
 
+
+
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
 
 
 public class Main {
+    /**
+     * Programa honen bidez beste programa guztien exekuzioa ahalbidetzen da menu baten bidez.
+     * Menuan exekutatu daitezkeen aukerak adierazten dira, "()" erabiliz setting espezifikoak adierazteko.
+     * Exekuzio setting hainbat aldatu ahal dira eta baita path-ak ere. Texto moduko parametroetarako aukera eta testua sakatu beharko da eta boolean bezalako balioentzarako zenbakia baino ez zakatuz balio aldatzeko nahikoa da.
+     *
+     */
+
     // ------------------------------ [PATHS] --------------------------------------
 
     //---GET RAW DATA---
     private static String PATH_IN = "src/x_in/";
-    private static String PATH_OUT = "src/x_out/Data/";
+    private static String PATH_GENERAL_OUT = "src/x_out/";
+    private static String PATH_OUT = PATH_GENERAL_OUT + "Data/";
+
     private static String MODIFIED_PATH = "/modified_";
     private static String FINAL_PATH = "/final_";
     private static String EMOJI_LIST = "src/x_in/emoji.txt";
 
-
     //---ANALISIS---
-    private static String ANALISIS_TRAIN_TXT_PATH = "src/x_out/Data/train/analisis.txt";
-    private static String ANALISIS_DEV_TXT_PATH = "src/x_out/Data/dev/analisis.txt";
-
+    private static String ANALISIS_TRAIN_TXT_PATH = PATH_OUT + "train/analisis.txt";
+    private static String ANALISIS_DEV_TXT_PATH = PATH_OUT + "dev/analisis.txt";
 
     //---TRAIN---
-    private static String TRAIN_ARFF_PATH = "src/x_out/Data/train/train.arff";
-    private static String NEW_TRAIN_ARFF_PATH = "src/x_out/Data/train/new_train.arff";
-    private static String BOW_TRAIN_ARFF_PATH = "src/x_out/Data/train/BoW_train.arff";
-    private static String FSS_TRAIN_ARFF_PATH = "src/x_out/Data/train/FSS_train.arff";
-
+    private static String TRAIN_ARFF_PATH = PATH_OUT + "train/train.arff";
+    private static String NEW_TRAIN_ARFF_PATH = PATH_OUT + "train/new_train.arff";
+    private static String BOW_TRAIN_ARFF_PATH = PATH_OUT + "train/BoW_train.arff";
+    private static String FSS_TRAIN_ARFF_PATH = PATH_OUT + "train/FSS_train.arff";
 
     //---DEV---
-    private static String DEV_ARFF_PATH = "src/x_out/Data/dev/dev.arff";
-    private static String NEW_DEV_ARFF_PATH = "src/x_out/Data/dev/new_dev.arff";
-    private static String COMPATIBLE_DEV_ARFF_PATH = "src/x_out/Data/dev/compatible_dev.arff";
-
+    private static String DEV_ARFF_PATH = PATH_OUT + "dev/dev.arff";
+    private static String NEW_DEV_ARFF_PATH = PATH_OUT + "dev/new_dev.arff";
+    private static String COMPATIBLE_DEV_ARFF_PATH = PATH_OUT + "dev/compatible_dev.arff";
 
     //---TEST---
-    private static String TEST_ARFF_PATH = "src/x_out/Data/test/test.arff";
-    private static String COMPATIBLE_TEST_PATH = "src/x_out/Data/test/compatible_test.arff";
-
+    private static String TEST_ARFF_PATH = PATH_OUT + "test/test.arff";
+    private static String COMPATIBLE_TEST_PATH = PATH_OUT + "test/compatible_test.arff";
 
     //---COMBINED---
-    private static String COMBINED_ARFF_PATH = "src/x_out/Data/combined.arff";
-    private static String BOW_COMBINED_ARFF_PATH = "src/x_out/Data/BoW_combined.arff";
-    private static String FSS_COMBINED_ARFF_PATH = "src/x_out/Data/FSS_combined.arff";
-
+    private static String COMBINED_ARFF_PATH = PATH_OUT + "combined.arff";
+    private static String BOW_COMBINED_ARFF_PATH = PATH_OUT + "BoW_combined.arff";
+    private static String FSS_COMBINED_ARFF_PATH = PATH_OUT + "FSS_combined.arff";
 
     //---MODELS---
-    private static String J48_MODEL_PATH = "src/x_out/Sailkatzailea/j48.model";
-    private static String RANDOMFOREST_MODEL_PATH = "src/x_out/Sailkatzailea/rf.model";
-    private static String RF_EKORKETA_DATUAK = "src/x_out/Sailkatzailea/EkorketaDatuakRF.csv";
-    private static String RF_PARAMETRO_OPT = "src/x_out/Sailkatzailea/RF_parametroOpt.csv";
-    private static String XGBOOST_MODEL_PATH = "src/x_out/Sailkatzailea/boost.model";
-
+    private static String J48_MODEL_PATH = PATH_GENERAL_OUT + "Sailkatzailea/j48.model";
+    private static String RANDOMFOREST_MODEL_PATH = PATH_GENERAL_OUT + "Sailkatzailea/rf.model";
+    private static String RF_EKORKETA_DATUAK = PATH_GENERAL_OUT + "Sailkatzailea/EkorketaDatuakRF.csv";
+    private static String RF_PARAMETRO_OPT = PATH_GENERAL_OUT + "Sailkatzailea/RF_parametroOpt.csv";
+    private static String XGBOOST_MODEL_PATH = PATH_GENERAL_OUT + "Sailkatzailea/boost.model";
 
     //---EXTRAS---
-    private static String DICTIONARY_TXT_PATH = "src/x_out/Data/dictionary.txt";
-    private static String IRAGARPENAK_PATH = "src/x_out/Iragarpenak/iragarpenakBaseLine.txt";
-
+    private static String DICTIONARY_TXT_PATH = PATH_OUT + "dictionary.txt";
+    private static String IRAGARPENAK_PATH = PATH_GENERAL_OUT + "Iragarpenak/iragarpenakBaseLine.txt";
 
     // ------------------------------ [SETTINGS] --------------------------------------
     private static boolean READ_CSV_EMOJIS = true;
@@ -77,7 +80,6 @@ public class Main {
     private static String IRAGARPEN_MODELOA = "RF";
     private static String IRAGARPEN_MOTA = "User"; //User, Message
     private static String ANALIZATUTAKO_DATUAK = "RAW Train"; //RAW Train, RAW Dev, RAW Test, RAW Combined, NEW Train, NEW Dev, BOW Train, FSS Train, Compatible Dev
-
 
     // ---- (RF PARAMETERS) ----S
     private static Boolean PN = true;
@@ -95,13 +97,14 @@ public class Main {
             System.out.println("1. Modeloa eraiki (" + IRAGARPEN_MODELOA + ")" );
             System.out.println("2. Baseline kalitatea");
             System.out.println("3. RandomForest ekorketa + kalitatea");
-            System.out.println("4. XGBoost ekorketa ");
-            System.out.println("5. Iragarpenak egin (" + IRAGARPEN_MODELOA + ") erabiliz");
-            System.out.println("6. (" + ANALIZATUTAKO_DATUAK + ") analizatu");
+            System.out.println("4. Iragarpenak egin (" + IRAGARPEN_MODELOA + ") erabiliz");
+            System.out.println("5. (" + ANALIZATUTAKO_DATUAK + ") analizatu");
+
 
             System.out.println("\nSETTINGS");
-            System.out.println("7. Fitxategien kokapena aldatu");
-            System.out.println("8. Programen exekuzio aukerak aldatu");
+            System.out.println("6. Fitxategien kokapena aldatu");
+            System.out.println("7. Programen exekuzio aukerak aldatu");
+            //System.out.println("8. XGBoost ekorketa ");
 
             System.out.println("\n0. IRTEN");
 
@@ -119,21 +122,21 @@ public class Main {
                     randomForestExec();
                     break;
                 case 4:
-                    prestatuData();
-                    XGBoostExec();
-                    break;
-                case 5:
                     iragarpenakEgin();
                     break;
-                case 6:
+                case 5:
                     analizeData();
                     break;
-                case 7:
+                case 6:
                     fitxategiKokapenAldaketa();
                     break;
-                case 8:
+                case 7:
                     settingsAldaketa();
                     break;
+                //case 8:
+                //prestatuData();
+                //XGBoostExec();
+                //break;
                 case 0:
                     System.out.println("Irtetzen...");
                     return;
@@ -142,7 +145,6 @@ public class Main {
             }
         }
     }
-
 
     // ------------------------------ [METODOAK] --------------------------------------
     private static void prestatuData() throws Exception {
@@ -272,7 +274,6 @@ public class Main {
                 var27.printStackTrace();
             }
 
-
             //balioak esleitu
             RandomForest RandomForest = new RandomForest();
 
@@ -293,6 +294,7 @@ public class Main {
             System.out.println("BagSizePercentage" + ParametroOpt.get("BagSizePercentage"));
             System.out.println("MaxDepth" + ParametroOpt.get("MaxDepth"));
             System.out.println("NumTree" + ParametroOpt.get("NumTree"));
+
 
             //Modeloa sortu
             RandomForest.buildClassifier(data);
@@ -342,70 +344,134 @@ public class Main {
             Scanner scanner = new Scanner(System.in);
 
             System.out.println("\n\nFitxategien kokapenaren aldaketa:");
-            System.out.println("1. TRAIN_ARFF_PATH: " + TRAIN_ARFF_PATH);
-            System.out.println("2. DEV_ARFF_PATH: " + DEV_ARFF_PATH);
-            System.out.println("3. ANALISIS_TRAIN_TXT_PATH: " + ANALISIS_TRAIN_TXT_PATH);
-            System.out.println("4. ANALISIS_DEV_TXT_PATH: " + ANALISIS_DEV_TXT_PATH);
-            System.out.println("5. NEW_TRAIN_ARFF_PATH: " + NEW_TRAIN_ARFF_PATH);
-            System.out.println("6. NEW_DEV_ARFF_PATH: " + NEW_DEV_ARFF_PATH);
-            System.out.println("7. DATA_COMBINED_PATH: " + COMBINED_ARFF_PATH);
-            System.out.println("8. BOW_TRAIN_ARFF_PATH: " + BOW_TRAIN_ARFF_PATH);
-            System.out.println("9. FSS_TRAIN_ARFF_PATH: " + FSS_TRAIN_ARFF_PATH);
-            System.out.println("10. DICTIONARY_TXT_PATH: " + DICTIONARY_TXT_PATH);
-            System.out.println("11. COMPATIBLE_DEV_ARFF_PATH: " + COMPATIBLE_DEV_ARFF_PATH);
+
+            System.out.println("\nKarpetak");
+            System.out.println("1. PATH_IN: " + PATH_IN);
+            System.out.println("2. PATH_OUT: " + PATH_OUT);
+
+            System.out.println("\nFitxategiak");
+            System.out.println("3. MODIFIED_PATH: " + MODIFIED_PATH);
+            System.out.println("4. FINAL_PATH: " + FINAL_PATH);
+            System.out.println("5. EMOJI_LIST: " + EMOJI_LIST);
+            System.out.println("6. ANALISIS_TRAIN_TXT_PATH: " + ANALISIS_TRAIN_TXT_PATH);
+            System.out.println("7. ANALISIS_DEV_TXT_PATH: " + ANALISIS_DEV_TXT_PATH);
+            System.out.println("8. TRAIN_ARFF_PATH: " + TRAIN_ARFF_PATH);
+            System.out.println("9. NEW_TRAIN_ARFF_PATH: " + NEW_TRAIN_ARFF_PATH);
+            System.out.println("10. BOW_TRAIN_ARFF_PATH: " + BOW_TRAIN_ARFF_PATH);
+            System.out.println("11. FSS_TRAIN_ARFF_PATH: " + FSS_TRAIN_ARFF_PATH);
+            System.out.println("12. DEV_ARFF_PATH: " + DEV_ARFF_PATH);
+            System.out.println("13. NEW_DEV_ARFF_PATH: " + NEW_DEV_ARFF_PATH);
+            System.out.println("14. COMPATIBLE_DEV_ARFF_PATH: " + COMPATIBLE_DEV_ARFF_PATH);
+            System.out.println("15. TEST_ARFF_PATH: " + TEST_ARFF_PATH);
+            System.out.println("16. COMPATIBLE_TEST_PATH: " + COMPATIBLE_TEST_PATH);
+            System.out.println("17. COMBINED_ARFF_PATH: " + COMBINED_ARFF_PATH);
+            System.out.println("18. BOW_COMBINED_ARFF_PATH: " + BOW_COMBINED_ARFF_PATH);
+            System.out.println("19. FSS_COMBINED_ARFF_PATH: " + FSS_COMBINED_ARFF_PATH);
+            System.out.println("20. J48_MODEL_PATH: " + J48_MODEL_PATH);
+            System.out.println("21. RANDOMFOREST_MODEL_PATH: " + RANDOMFOREST_MODEL_PATH);
+            System.out.println("22. RF_EKORKETA_DATUAK: " + RF_EKORKETA_DATUAK);
+            System.out.println("23. RF_PARAMETRO_OPT: " + RF_PARAMETRO_OPT);
+            System.out.println("24. XGBOOST_MODEL_PATH: " + XGBOOST_MODEL_PATH);
+            System.out.println("25. DICTIONARY_TXT_PATH: " + DICTIONARY_TXT_PATH);
+            System.out.println("26. IRAGARPENAK_PATH: " + IRAGARPENAK_PATH);
             System.out.println("0. Irten");
 
             int aukera = scanner.nextInt();
 
             switch (aukera) {
                 case 1:
-                    TRAIN_ARFF_PATH = pathAldaketa("TRAIN_ARFF_PATH", scanner);
+                    PATH_IN = pathAldaketa("PATH_IN",  scanner);
                     break;
                 case 2:
-                    DEV_ARFF_PATH = pathAldaketa("DEV_ARFF_PATH", scanner);
+                    PATH_OUT = pathAldaketa("PATH_OUT", scanner);
                     break;
                 case 3:
-                    ANALISIS_TRAIN_TXT_PATH = pathAldaketa("ANALISIS_TRAIN_TXT_PATH", scanner);
+                    MODIFIED_PATH = pathAldaketa("MODIFIED_PATH", scanner);
                     break;
                 case 4:
-                    ANALISIS_DEV_TXT_PATH = pathAldaketa("ANALISIS_DEV_TXT_PATH", scanner);
+                    FINAL_PATH = pathAldaketa("FINAL_PATH", scanner);
                     break;
                 case 5:
-                    NEW_TRAIN_ARFF_PATH = pathAldaketa("NEW_TRAIN_ARFF_PATH", scanner);
+                    EMOJI_LIST = pathAldaketa("EMOJI_LIST", scanner);
                     break;
                 case 6:
-                    NEW_DEV_ARFF_PATH = pathAldaketa("NEW_DEV_ARFF_PATH", scanner);
+                    ANALISIS_TRAIN_TXT_PATH = pathAldaketa("ANALISIS_TRAIN_TXT_PATH", scanner);
                     break;
                 case 7:
-                    COMBINED_ARFF_PATH = pathAldaketa("DATA_COMBINED_PATH", scanner);
+                    ANALISIS_DEV_TXT_PATH = pathAldaketa("ANALISIS_DEV_TXT_PATH", scanner);
                     break;
                 case 8:
-                    BOW_TRAIN_ARFF_PATH = pathAldaketa("BOW_TRAIN_ARFF_PATH", scanner);
+                    TRAIN_ARFF_PATH = pathAldaketa("TRAIN_ARFF_PATH", scanner);
                     break;
                 case 9:
-                    FSS_TRAIN_ARFF_PATH = pathAldaketa("FSS_TRAIN_ARFF_PATH", scanner);
+                    NEW_TRAIN_ARFF_PATH = pathAldaketa("NEW_TRAIN_ARFF_PATH", scanner);
                     break;
                 case 10:
-                    DICTIONARY_TXT_PATH = pathAldaketa("DICTIONARY_TXT_PATH", scanner);
+                    BOW_TRAIN_ARFF_PATH = pathAldaketa("BOW_TRAIN_ARFF_PATH", scanner);
                     break;
                 case 11:
+                    FSS_TRAIN_ARFF_PATH = pathAldaketa("FSS_TRAIN_ARFF_PATH", scanner);
+                    break;
+                case 12:
+                    DEV_ARFF_PATH = pathAldaketa("DEV_ARFF_PATH", scanner);
+                    break;
+                case 13:
+                    NEW_DEV_ARFF_PATH = pathAldaketa("NEW_DEV_ARFF_PATH", scanner);
+                    break;
+                case 14:
                     COMPATIBLE_DEV_ARFF_PATH = pathAldaketa("COMPATIBLE_DEV_ARFF_PATH", scanner);
                     break;
+                case 15:
+                    TEST_ARFF_PATH = pathAldaketa("TEST_ARFF_PATH", scanner);
+                    break;
+                case 16:
+                    COMPATIBLE_TEST_PATH = pathAldaketa("COMPATIBLE_TEST_PATH", scanner);
+                    break;
+                case 17:
+                    COMBINED_ARFF_PATH = pathAldaketa("COMBINED_ARFF_PATH", scanner);
+                    break;
+                case 18:
+                    BOW_COMBINED_ARFF_PATH = pathAldaketa("BOW_COMBINED_ARFF_PATH", scanner);
+                    break;
+                case 19:
+                    FSS_COMBINED_ARFF_PATH = pathAldaketa("FSS_COMBINED_ARFF_PATH", scanner);
+                    break;
+                case 20:
+                    J48_MODEL_PATH = pathAldaketa("J48_MODEL_PATH", scanner);
+                    break;
+                case 21:
+                    RANDOMFOREST_MODEL_PATH = pathAldaketa("RANDOMFOREST_MODEL_PATH", scanner);
+                    break;
+                case 22:
+                    RF_EKORKETA_DATUAK = pathAldaketa("RF_EKORKETA_DATUAK", scanner);
+                    break;
+                case 23:
+                    RF_PARAMETRO_OPT = pathAldaketa("RF_PARAMETRO_OPT", scanner);
+                    break;
+                case 24:
+                    XGBOOST_MODEL_PATH = pathAldaketa("XGBOOST_MODEL_PATH", scanner);
+                    break;
+                case 25:
+                    DICTIONARY_TXT_PATH = pathAldaketa("DICTIONARY_TXT_PATH", scanner);
+                    break;
+                case 26:
+                    IRAGARPENAK_PATH = pathAldaketa("IRAGARPENAK_PATH", scanner);
+                    break;
                 case 0:
-                    System.out.println("Menu nagusira bueltatzen...");
                     exitMenu = true;
                     break;
                 default:
-                    System.out.println("Arazoren bat egon da, mesedez aukera egoki bat sakatu");
+                    System.out.println("Aukera okerra. Mesedez, aukeratu beste bat.");
+                    break;
             }
         }
     }
 
-    private static String pathAldaketa(String pathIzena, Scanner scanner) {
-        System.out.println("Hurrengo path-erako balio berria sakatu " + pathIzena + ": ");
-        String pathBerria = scanner.next();
-        System.out.println(pathIzena + " -ren path berria: " + pathBerria + " -ra");
-        return pathBerria;
+    private static String pathAldaketa(String izena, Scanner scanner) {
+        System.out.println(izena + " aldatu:");
+        String path = scanner.next();
+        System.out.println(izena + " aldatu da.");
+        return path;
     }
 
     private static void settingsAldaketa() {
@@ -431,7 +497,7 @@ public class Main {
                     HOLD_OUT_PERCENTAGE = Integer.parseInt(aukeraAldatu("HOLD_OUT_PERCENTAGE",  scanner));
                     break;
                 case 2:
-                    System.out.println("Aukera posibleak: RF, J48, XGBoost");
+                    System.out.println("Aukera posibleak: RF, J48");
                     IRAGARPEN_MODELOA = aukeraAldatu("IRAGARPEN_MODELOA",  scanner);
                     break;
                 case 3:
@@ -517,7 +583,7 @@ public class Main {
                             System.out.println("Arazoren bat egon da, mesedez aukera egoki bat sakatu");
                             break;
                     }
-
+                    break;
                 case 7:
                     System.out.println("Aukera posibleak:");
                     System.out.println("1. User");
@@ -535,11 +601,18 @@ public class Main {
                             System.out.println("Arazoren bat egon da, mesedez aukera egoki bat sakatu");
                             break;
                     }
-
                 case 0:
                     System.out.println("Menu nagusira bueltatzen...");
                     exitMenu = true;
                     break;
+                case 143:
+                    System.out.println("Why do I keep getting attracted?\n" +
+                            "니 모습만 떠올라\n" +
+                            "I cannot explain this emotion\n" +
+                            "One-Four-Three, I love you");
+                    exitMenu = true;
+                    break;
+
                 default:
                     System.out.println("Arazoren bat egon da, mesedez aukera egoki bat sakatu");
             }

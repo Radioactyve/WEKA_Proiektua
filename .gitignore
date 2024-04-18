@@ -28,4 +28,3 @@ bin/
 ### Mac OS ###
 .DS_Store
 .idea/libraries/weka.xml
-src/x_out
