@@ -79,13 +79,13 @@ public class ParametroEkorketa {
         RF.setNumExecutionSlots(Runtime.getRuntime().availableProcessors());
         int erroAtributuPN = (int) (Math.sqrt(data.numAttributes()));
         int erroAtributuMD = (int) (Math.sqrt(data.numAttributes()));
-        int maxBSP = 25;
-        int maxNT = 35;
+        int maxBSP = 50;
+        int maxNT = 25;
 
 
         //loop ignore
         if (!usePN) {
-            erroAtributuPN = 1;
+            erroAtributuPN = 11;
         }
         if (!useBSP) {
             maxBSP = 2;
@@ -94,15 +94,15 @@ public class ParametroEkorketa {
             erroAtributuMD = 2;
         }
         if (!useNT) {
-            maxNT = 51;
+            maxNT = 11;
         }
 
         //PN ratio
         for (int PN = 10; PN < erroAtributuPN; PN += 1) { //atributuen erroa bainon txikiagorarte
             //BagSizePercentage
-            for (int BSP = 1; BSP < maxBSP; BSP += 4) {//Gure kasuan datu askorekin lan egingo dugunez, portzentai txiki bat erabiliko dugu. 4%-ko saltoak
+            for (int BSP = 1; BSP < maxBSP; BSP += 1) {//Gure kasuan datu askorekin lan egingo dugunez, portzentai txiki bat erabiliko dugu. 4%-ko saltoak
                 //maxDepth
-                for (int MD = 1; MD < erroAtributuMD; MD += 5) {
+                for (int MD = 1; MD < erroAtributuMD; MD += 1) {
                     //numTree
                     for (int NT = 10; NT < maxNT; NT += 1) {
                         //loop count
