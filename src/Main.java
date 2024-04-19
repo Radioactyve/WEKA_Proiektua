@@ -63,15 +63,15 @@ public class Main {
     private static String FSS_COMBINED_ARFF_PATH = PATH_OUT + "FSS_combined.arff";
 
     //---MODELS---
-    private static String J48_MODEL_PATH = PATH_GENERAL_OUT + "Sailkatzailea/j48.model";
-    private static String RANDOMFOREST_MODEL_PATH = PATH_GENERAL_OUT + "Sailkatzailea/rf.model";
-    private static String RF_EKORKETA_DATUAK = PATH_GENERAL_OUT + "Sailkatzailea/EkorketaDatuakRF.csv";
-    private static String RF_PARAMETRO_OPT = PATH_GENERAL_OUT + "Sailkatzailea/RF_parametroOpt.csv";
-    private static String XGBOOST_MODEL_PATH = PATH_GENERAL_OUT + "Sailkatzailea/boost.model";
+    private static String J48_MODEL_PATH = PATH_GENERAL_OUT + "Sailkatzailea/model/j48.model";
+    private static String RANDOMFOREST_MODEL_PATH = PATH_GENERAL_OUT + "Sailkatzailea/model/rf.model";
+    private static String RF_EKORKETA_DATUAK = PATH_GENERAL_OUT + "Sailkatzailea/Parametroak/EkorketaDatuakRF.csv";
+    private static String RF_PARAMETRO_OPT = PATH_GENERAL_OUT + "Sailkatzailea/Parametroak/RF_parametroOpt.csv";
+    private static String XGBOOST_MODEL_PATH = PATH_GENERAL_OUT + "Sailkatzailea/model/boost.model";
 
     //---EXTRAS---
     private static String DICTIONARY_TXT_PATH = PATH_OUT + "dictionary.txt";
-    private static String IRAGARPENAK_PATH = PATH_GENERAL_OUT + "Iragarpenak/iragarpenakBaseLine.txt";
+    private static String IRAGARPENAK_PATH = PATH_GENERAL_OUT + "Iragarpenak/iragarpenak.txt";
 
     // ------------------------------ [SETTINGS] --------------------------------------
     private static boolean READ_CSV_EMOJIS = true;

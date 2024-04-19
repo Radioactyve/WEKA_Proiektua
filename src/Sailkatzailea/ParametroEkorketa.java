@@ -131,7 +131,7 @@ public class ParametroEkorketa {
                         //evaluator.crossValidateModel(RF, dataDev, 5, new Random(1));
                         long Amaiera = System.nanoTime();
                         long exDenb = Amaiera - Hasiera;
-                        double Fmeasure = evaluator.fMeasure(1);
+                        double Fmeasure = evaluator.fMeasure(minoritarioa);
 
                         //Datuak gorde
                         datuak = new String[]{String.valueOf(PN), String.valueOf(BSP), String.valueOf(MD), String.valueOf(NT), String.valueOf(Fmeasure), String.valueOf(exDenb)};
@@ -145,17 +145,17 @@ public class ParametroEkorketa {
                         writer.newLine();
 
                         //Balio optimoak eguneratu
-                        if (evaluator.fMeasure(1) > optFMeasure) {
+                        if (evaluator.fMeasure(minoritarioa) > optFMeasure) {
                             evalOpt = evaluator;
-                            optFMeasure = evaluator.fMeasure(1);
+                            optFMeasure = evaluator.fMeasure(minoritarioa);
                             PNopt = PN;
                             BSPopt = BSP;
                             MDopt = MD;
                             NTopt = NT;
                             denbOpt = exDenb;
-                        } else if (evaluator.fMeasure(1) == optFMeasure && exDenb < denbOpt) {
+                        } else if (evaluator.fMeasure(minoritarioa) == optFMeasure && exDenb < denbOpt) {
                             evalOpt = evaluator;
-                            optFMeasure = evaluator.fMeasure(1);
+                            optFMeasure = evaluator.fMeasure(minoritarioa);
                             PNopt = PN;
                             BSPopt = BSP;
                             MDopt = MD;
