@@ -32,8 +32,8 @@ public class J48BaseLine {
 
 
         // Realizar evaluación cruzada del modelo
-        Evaluation eval = new Evaluation(data);
-        eval.crossValidateModel(j48, dataDev, 5, new Random(1));
+        Evaluation eval = new Evaluation(dataDev);
+        eval.evaluateModel(j48, dataDev);
 
         // Imprimir resultados
         System.out.println("F-Measure: " + eval.fMeasure(1));

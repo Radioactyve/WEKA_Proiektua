@@ -201,6 +201,5 @@ public class ParametroEkorketa {
         System.out.println(evalOpt.toClassDetailsString());
         System.out.println(evalOpt.toMatrixString());
 
-
     }
 }
